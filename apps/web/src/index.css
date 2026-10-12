@@ -1,1 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Patrick+Hand&display=swap");
 @import "@penfight/ui/globals.css";
+
+:root {
+	--font-hand: "Patrick Hand", cursive;
+	--font-display: "Anton", Impact, sans-serif;
+}

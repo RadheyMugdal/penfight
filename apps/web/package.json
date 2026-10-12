@@ -3,14 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3001",
+    "auth:generate": "varlock run -- bun x auth@latest generate --config src/services.ts --output ../../packages/db/src/schema/auth.ts --yes",
     "build": "next build",
     "check-types": "tsc --noEmit",
-    "start": "next start",
+    "dev": "next dev --port 3001",
     "env:generate": "varlock codegen",
-    "auth:generate": "varlock run -- bun x auth@latest generate --config src/services.ts --output ../../packages/db/src/schema/auth.ts --yes"
+    "start": "next start"
   },
   "dependencies": {
+    "@dimforge/rapier3d-compat": "^0.21.0",
     "@penfight/api": "workspace:*",
     "@penfight/auth": "workspace:*",
     "@penfight/db": "workspace:*",
@@ -30,6 +31,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "sonner": "catalog:",
+    "three": "^0.186.1",
     "varlock": "catalog:",
     "zod": "catalog:"
   },
@@ -40,6 +42,7 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@types/three": "^0.186.0",
     "tailwindcss": "catalog:",
     "typescript": "catalog:"
   }
