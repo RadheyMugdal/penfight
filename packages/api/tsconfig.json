@@ -2,6 +2,7 @@
   "extends": "@penfight/config/tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "types": ["bun"]
   }
 }

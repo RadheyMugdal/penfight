@@ -43,6 +43,7 @@
     "dev": "turbo run dev",
     "dev:vercel": "bunx vercel dev -L",
     "dev:web": "turbo run dev -F web --",
+    "realtime": "bun packages/api/src/realtime-server.ts",
     "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
     "env:preview": "tsx scripts/sync-vercel-env.ts preview",
     "env:production": "tsx scripts/sync-vercel-env.ts production",
@@ -58,6 +59,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.12",
     "@penfight/config": "workspace:*",
+    "@types/bun": "^1.4.3",
     "@types/node": "catalog:",
     "tsx": "^4.23.13",
     "turbo": "^2.10.12",

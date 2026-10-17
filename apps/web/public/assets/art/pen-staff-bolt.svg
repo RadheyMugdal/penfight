@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="240" viewBox="0 0 1600 240">
+  <defs>
+    <linearGradient id="clear" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fafcfb" stop-opacity=".96"/>
+      <stop offset=".2" stop-color="#dce5e4" stop-opacity=".82"/>
+      <stop offset=".5" stop-color="#ffffff" stop-opacity=".44"/>
+      <stop offset=".76" stop-color="#9ca9aa" stop-opacity=".7"/>
+      <stop offset="1" stop-color="#eef2ef" stop-opacity=".92"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2f3ee"/>
+      <stop offset=".18" stop-color="#aeb5b3"/>
+      <stop offset=".48" stop-color="#f9faf7"/>
+      <stop offset=".76" stop-color="#838b89"/>
+      <stop offset="1" stop-color="#d6dad5"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ed756a"/>
+      <stop offset=".32" stop-color="#bd352f"/>
+      <stop offset=".7" stop-color="#8f211f"/>
+      <stop offset="1" stop-color="#dc574e"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-40%" width="120%" height="190%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dy="7"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".27"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <!-- One continuous Cello Pinpoint silhouette: capped end on the left,
+         writing point on the right. Nothing floats above the body. -->
+    <path d="M58 79Q36 82 29 101L20 120l9 19q7 19 29 22h226q23 0 34-17l13-20V98l-13-20q-11-17-34-17H58z"
+          fill="url(#red)" stroke="#752321" stroke-width="4"/>
+    <path d="M50 82h205q18 0 27 10l18 22H44q-13 0-18-5l7-14q5-11 17-13z"
+          fill="#ffafa5" opacity=".34"/>
+    <!-- The clip is attached to the cap at both ends, so it reads as part
+         of the pen even at the tiny size used on a phone. -->
+    <path d="M73 69h180q26 0 38 16l15 19-13 8-18-17q-8-8-24-8H73q-15 0-15-9t15-9z"
+          fill="url(#metal)" stroke="#6f7775" stroke-width="3"/>
+    <rect x="294" y="82" width="1080" height="76" rx="31" fill="url(#clear)" stroke="#737d7d" stroke-width="4"/>
+    <path d="M330 101h1012" stroke="#fff" stroke-opacity=".86" stroke-width="8" stroke-linecap="round"/>
+    <path d="M340 139h1000" stroke="#687473" stroke-opacity=".28" stroke-width="5" stroke-linecap="round"/>
+    <rect x="699" y="77" width="210" height="86" rx="10" fill="url(#metal)" stroke="#656c69" stroke-width="4"/>
+    <path d="M723 94h161" stroke="#fff" stroke-opacity=".82" stroke-width="7" stroke-linecap="round"/>
+    <rect x="686" y="75" width="17" height="90" rx="5" fill="url(#red)"/>
+    <rect x="905" y="75" width="17" height="90" rx="5" fill="url(#red)"/>
+    <path d="M1371 90h72l104 30-104 30h-72z" fill="url(#clear)" stroke="#737d7d" stroke-width="4"/>
+    <path d="M1547 113l35 7-35 7z" fill="#2f3433"/>
+    <path d="M395 121h210" stroke="#27312f" stroke-opacity=".33" stroke-width="5" stroke-linecap="round"/>
+    <text x="428" y="132" fill="#34403e" fill-opacity=".7" font-family="Arial, sans-serif" font-size="31" font-weight="700" letter-spacing="4">PINPOINT</text>
+  </g>
+</svg>

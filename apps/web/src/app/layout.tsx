@@ -1,23 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-
-import "../index.css";
-import Header from "@/components/header";
+import Script from "next/script";
 import Providers from "@/components/providers";
-
-const geistSans = Geist({
-	subsets: ["latin"],
-	variable: "--font-geist-sans",
-});
-
-const geistMono = Geist_Mono({
-	subsets: ["latin"],
-	variable: "--font-geist-mono",
-});
+import "../index.css";
 
 export const metadata: Metadata = {
-	description: "penfight",
-	title: "penfight",
+	title: "Pen Fight · the unofficial sport of the last bench",
+	description:
+		"You spent half of school flicking a pen across the desk while the teacher wrote on the board. Same game, same pens, real stakes, now in your browser: winner keeps the pen, and at the end of the bench, the Trimax.",
+	icons: {
+		icon: [
+			{ url: "/favicon-32.png", sizes: "32x32" },
+			{ url: "/favicon-16.png", sizes: "16x16" },
+		],
+		apple: "/apple-touch-icon.png",
+	},
+	manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({
@@ -27,15 +24,34 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-			>
-				<Providers>
-					<div className="grid h-svh grid-rows-[auto_1fr]">
-						<Header />
-						{children}
-					</div>
-				</Providers>
+			<head>
+				<meta name="pf-bundle" content="index-DyrlfgZ-.js" />
+				<meta name="theme-color" content="#c4691a" />
+				<meta name="color-scheme" content="dark" />
+				<link
+					as="font"
+					crossOrigin="anonymous"
+					href="/assets/fonts/patrick-hand.woff2"
+					rel="preload"
+					type="font/woff2"
+				/>
+				<link
+					as="font"
+					crossOrigin="anonymous"
+					href="/assets/fonts/anton.woff2"
+					rel="preload"
+					type="font/woff2"
+				/>
+				<link
+					as="image"
+					fetchPriority="high"
+					href="/assets/art/school-classroom-door.jpg"
+					rel="preload"
+				/>
+				<link href="/assets/index-CueJ_IL1.css" rel="stylesheet" />
+			</head>
+			<body>
+				<Providers>{children}</Providers>
 			</body>
 		</html>
 	);

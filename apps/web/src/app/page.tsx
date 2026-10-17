@@ -1,9 +1,26 @@
-import PenFightHome from "@/components/pen-fight/pen-fight-home";
+"use client";
+
+import Script from "next/script";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
 	return (
-		<div className="container mx-auto max-w-4xl px-4 py-6">
-			<PenFightHome />
-		</div>
+		<>
+			<div id="app" />
+			<div className="vignette" />
+			{mounted ? (
+				<Script
+					src="/assets/index-DyrlfgZ-.js"
+					strategy="afterInteractive"
+					type="module"
+				/>
+			) : null}
+		</>
 	);
 }

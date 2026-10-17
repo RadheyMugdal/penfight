@@ -6,6 +6,7 @@
     "./*": "./src/*.ts"
   },
   "scripts": {
+    "dev": "bun src/realtime-server.ts",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
