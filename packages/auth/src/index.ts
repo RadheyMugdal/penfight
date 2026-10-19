@@ -7,6 +7,8 @@ import { nextCookies } from "better-auth/next-js";
 export type AuthConfig = {
 	BETTER_AUTH_URL: string;
 	BETTER_AUTH_SECRET: string;
+	GOOGLE_CLIENT_ID?: string;
+	GOOGLE_CLIENT_SECRET?: string;
 };
 
 export function createAuth(env: AuthConfig, database: Database) {
@@ -19,6 +21,16 @@ export function createAuth(env: AuthConfig, database: Database) {
 		emailAndPassword: { enabled: true },
 		plugins: [nextCookies()],
 		secret: env.BETTER_AUTH_SECRET,
+		socialProviders: {
+			...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+				? {
+						google: {
+							clientId: env.GOOGLE_CLIENT_ID,
+							clientSecret: env.GOOGLE_CLIENT_SECRET,
+						},
+					}
+				: {}),
+		},
 		trustedOrigins: [env.BETTER_AUTH_URL],
 	});
 }

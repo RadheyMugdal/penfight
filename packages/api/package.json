@@ -6,8 +6,8 @@
     "./*": "./src/*.ts"
   },
   "scripts": {
-    "dev": "bun src/realtime-server.ts",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "dev": "bun src/realtime-server.ts"
   },
   "dependencies": {
     "@penfight/auth": "workspace:*",

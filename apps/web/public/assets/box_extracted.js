@@ -1,19 +1,790 @@
-class NoA{constructor(A,g,e,i=()=>{},t=()=>{},C=()=>{}){K(this,"wrap");K(this,"tray");K(this,"owner");K(this,"tabs");K(this,"lid");K(this,"shutArt");K(this,"actionsEl");K(this,"frame");K(this,"card");K(this,"useBtn");K(this,"shutBtn");K(this,"rewardTransferTimers",[]);K(this,"releaseModal",null);K(this,"selected");K(this,"previousFocus",null);K(this,"duelPick",null);K(this,"stakePick",null);K(this,"schoolLoadoutPick",null);K(this,"box",1);K(this,"recoverySelections",{});K(this,"onClosed",null);K(this,"onTuk",null);K(this,"onSelection",null);K(this,"closing",!1);this.save=A,this.onEquip=g,this.matchInProgress=e,this.onRanking=i,this.onShare=t,this.onChallenge=C,this.selected=A.equipped,this.wrap=document.createElement("div"),this.wrap.className="boxwrap",this.wrap.setAttribute("role","dialog"),this.wrap.setAttribute("aria-modal","true"),this.setShown(!1),this.wrap.setAttribute("aria-label","Your compass box");const o=document.createElement("div");o.className="boxstack",this.tabs=document.createElement("div"),this.tabs.className="boxtabs";const s=document.createElement("div");s.className="tinframe";const n=document.createElement("img");n.className="tinart",n.src=dM,n.alt="",n.draggable=!1;const a=document.createElement("div");a.className="tinlid";const B=document.createElement("img");B.src=dM,B.alt="",B.draggable=!1,a.appendChild(B);const Q=document.createElement("img");Q.className="tinshut",Q.src=Dw,Q.alt="",Q.draggable=!1,this.lid=a,this.shutArt=Q;const l=document.createElement("div");l.className="tinowner",l.textContent=A.name==="me"?"":A.name,this.owner=l,this.tray=document.createElement("div"),this.tray.className="tinslots",s.append(n,l,this.tray,a,Q),this.frame=s,this.card=document.createElement("div"),this.card.className="pencard";const h=document.createElement("div");h.className="actions",this.useBtn=document.createElement("button"),this.useBtn.className="stampbtn",this.useBtn.addEventListener("click",k=>{var b,q;if(k.stopPropagation(),this.duelPick){if(!this.duelPick.eligible.has(this.selected)||this.selected===this.duelPick.current)return;this.duelPick.onConfirm(this.selected),this.close();return}if(this.stakePick){if(!this.stakePick.eligible.has(this.selected))return;const x=this.stakePick.onPick,T=this.selected,N=((b=this.stakePick.copy)==null?void 0:b.variant)==="recovery";this.stakePick=null,this.close(),window.setTimeout(()=>x(T),N?200:1260);return}if(this.schoolLoadoutPick){if(this.schoolLoadoutPick.selected.length!==2)return;const x=this.schoolLoadoutPick.onConfirm,T=[...this.schoolLoadoutPick.selected];this.schoolLoadoutPick=null,this.close(),window.setTimeout(()=>x(T),1260);return}const R=(q=ps(this.save,this.selected))==null?void 0:q.who;if(R&&!this.save.owned.includes(this.selected)){this.onChallenge(R);return}this.onEquip(this.selected),this.render()}),this.shutBtn=document.createElement("button"),this.shutBtn.className="shutbtn",this.shutBtn.textContent="shut the box",this.shutBtn.addEventListener("click",k=>{k.stopPropagation(),this.close()}),h.append(this.useBtn,this.shutBtn),this.actionsEl=h;const p=document.createElement("button");p.className="barbtn",p.textContent="share",p.addEventListener("click",k=>{k.stopPropagation(),this.onShare()});const u=document.createElement("button");u.className="barbtn",u.textContent="ranking",u.addEventListener("click",k=>{k.stopPropagation(),this.onRanking()});const y=document.createElement("a");y.className="barbtn",y.href=mt.href,y.target="_blank",y.rel="noopener noreferrer",y.textContent=mt.chip,y.setAttribute("aria-label",mt.label),y.addEventListener("click",k=>{k.stopPropagation(),Mw("box")});const m=document.createElement("div");m.className="boxbar",m.append(this.tabs,p),m.append(u),XB()&&m.append(y);const f=document.createElement("div");f.className="boxrail",f.append(m,this.card,h),o.append(s,f),o.addEventListener("click",k=>k.stopPropagation()),this.wrap.appendChild(o),this.wrap.addEventListener("click",()=>this.close()),this.wrap.addEventListener("keydown",k=>{if(k.key==="Escape"){k.preventDefault(),this.close();return}zw(this.wrap,k)}),this.armResync(),document.body.appendChild(this.wrap)}standDown(A){document.body.classList.toggle("boxopen",A)}armResync(){const A=()=>{document.hidden||this.standDown(this.open)};document.addEventListener("visibilitychange",A),window.addEventListener("pageshow",A)}get open(){return this.wrap.classList.contains("show")}setShown(A){this.wrap.setAttribute("aria-hidden",A?"false":"true"),this.wrap.inert=!A}show(A){this.duelPick=null,this.wrap.classList.remove("duelpick"),this.stakePick=null,this.schoolLoadoutPick=null,this.wrap.classList.remove("stakepick"),this.selected=A??this.save.equipped,this.box=Jn(this.selected),this.reveal(A?"won":""),ug("box_opened",{won:!!A,duel:!1})}showLabBox(A,g=!1){this.duelPick=null,this.wrap.classList.remove("duelpick"),this.stakePick=null,this.schoolLoadoutPick=null,this.wrap.classList.remove("stakepick"),this.selected=A??this.save.owned.find(e=>Jn(e)===3)??lb(this.save)[0]??this.save.equipped,this.box=3,this.clearRewardTransfer(),this.wrap.classList.toggle("rewardtransfer",g&&!!A),this.reveal(A?"won":""),g&&A&&this.beginRewardTransfer(),ug("box_opened",{won:!!A,duel:!1})}beginRewardTransfer(){const A=document.body.classList.contains("review-reduced-motion")||window.matchMedia("(prefers-reduced-motion: reduce)").matches;if(this.setRewardControlsInert(!0),A){this.wrap.classList.add("rewardtransfergo","rewardtransferlanded"),this.setRewardControlsInert(!1);return}this.rewardTransferTimers.push(window.setTimeout(()=>{this.wrap.classList.add("rewardtransfergo")},1160)),this.rewardTransferTimers.push(window.setTimeout(()=>{var g;this.wrap.classList.add("rewardtransferlanded"),this.setRewardControlsInert(!1),(g=this.onTuk)==null||g.call(this),this.shutBtn.focus({preventScroll:!0})},2050))}clearRewardTransfer(){for(const A of this.rewardTransferTimers)window.clearTimeout(A);this.rewardTransferTimers=[],this.wrap.classList.remove("rewardtransfer","rewardtransfergo","rewardtransferlanded"),this.setRewardControlsInert(!1)}setRewardControlsInert(A){this.tabs.inert=A,this.actionsEl.inert=A;const g=this.wrap.querySelector(".boxbar");g&&(g.inert=A)}showChampionshipTin(A,g=!1){this.duelPick=null,this.wrap.classList.remove("duelpick"),this.stakePick=null,this.schoolLoadoutPick=null,this.wrap.classList.remove("stakepick");const e=this.save.owned.find(i=>SQ(i))??Bl(4)[0];this.selected=A??e,this.box=Jn(this.selected),this.box!==4&&this.box!==5&&(this.box=4),this.clearRewardTransfer(),this.wrap.classList.toggle("rewardtransfer",g&&!!A),this.reveal(A?"won":""),g&&A&&this.beginRewardTransfer(),ug("box_opened",{won:!!A,duel:!1})}showForDuel(A){this.duelPick={current:A.selected,eligible:new Set(A.eligible),onConfirm:A.onConfirm,onPreview:A.onPreview??(()=>{})},this.selected=A.selected,this.box=Jn(A.selected),this.wrap.classList.add("duelpick"),this.reveal(""),ug("box_opened",{won:!1,duel:!0})}reveal(A){this.beginModal(),this.setShown(!0),this.wrap.setAttribute("aria-label",this.duelPick?"Choose your pen for this duel":this.box===3?"Your Chemistry Lab tin":this.box>=6?"Your pencil case":this.box>=4?"Your championship tin":"Your compass box"),this.owner.textContent=this.save.name==="me"?"":this.save.name,this.wrap.classList.add("show"),this.render(A),this.standDown(!0),this.frame.classList.add("instant","shut"),this.frame.offsetWidth,this.frame.classList.remove("instant");const g=this.wrap.classList.contains("rewardtransfer")&&(document.body.classList.contains("review-reduced-motion")||window.matchMedia("(prefers-reduced-motion: reduce)").matches);window.setTimeout(()=>{var i;(i=this.onTuk)==null||i.call(this),this.frame.classList.remove("shut");const e=this.tray.querySelector(".slot.sel");this.wrap.classList.contains("rewardtransfer")||e==null||e.focus({preventScroll:!0})},g?0:this.duelPick?280:620)}showForStake(A,g,e=()=>{},i,t=[]){var o;if(!A.length)return;this.beginModal();const C=[...new Set(t.filter(s=>A.includes(s)))];if(this.stakePick={eligible:new Set(A),ranked:C,onPick:g,onCancel:e,copy:i},this.selected=C[0]??(A.includes(this.save.equipped)?this.save.equipped:A[0]),this.box=Jn(this.selected),this.recoverySelections={[this.box]:this.selected},this.owner.textContent=this.save.name==="me"?"":this.save.name,this.setShown(!0),this.wrap.setAttribute("aria-label",(i==null?void 0:i.aria)??"Choose a pen for this school match"),this.wrap.classList.add("show","stakepick"),this.render("stake"),this.standDown(!0),(i==null?void 0:i.variant)==="recovery"){if(!this.wrap.style.getPropertyValue("--recovery-bench")){const s=oQ("9d"),n=document.createElement("canvas");n.width=640,n.height=1024;const a=n.getContext("2d");a.translate(640,0),a.rotate(Math.PI/2),a.drawImage(s.image,0,0),this.wrap.style.setProperty("--recovery-bench",`url("${n.toDataURL("image/png")}")`),s.dispose()}this.frame.classList.remove("shut","instant"),(o=this.tray.querySelector(".slot.sel"))==null||o.focus({preventScroll:!0});return}this.frame.classList.add("instant","shut"),this.frame.offsetWidth,this.frame.classList.remove("instant"),window.setTimeout(()=>{var s,n;(s=this.onTuk)==null||s.call(this),this.frame.classList.remove("shut"),(n=this.tray.querySelector(".slot.sel"))==null||n.focus({preventScroll:!0})},620)}showForSchoolLoadout(A){if(A.eligible.length<2)return;this.beginModal();const g=A.eligible.find(e=>e!=="reynolds-trimax")??A.eligible[0];this.stakePick=null,this.schoolLoadoutPick={eligible:new Set(A.eligible),selected:[],championTry:A.championTry,tryNumber:A.tryNumber,onConfirm:A.onConfirm,onCancel:A.onCancel??(()=>{})},this.selected=g,this.box=Jn(this.selected),this.owner.textContent=this.save.name==="me"?"":this.save.name,this.setShown(!0),this.wrap.classList.add("show","stakepick","schoolloadoutpick"),this.wrap.setAttribute("aria-label",A.championTry?"Choose two backup pens for Class 9B":`Choose two pens for 9B try ${A.tryNumber}`),this.render("loadout"),this.standDown(!0),this.frame.classList.add("instant","shut"),this.frame.offsetWidth,this.frame.classList.remove("instant"),window.setTimeout(()=>{var e;(e=this.onTuk)==null||e.call(this),this.frame.classList.remove("shut")},620)}selectionFeedback(A,g){var t;const e=g,i=e.pointerType==="touch"||e.pointerType==="pen"||!e.pointerType&&g.detail>0&&window.matchMedia("(pointer: coarse)").matches;(t=this.onSelection)==null||t.call(this,A,i)}beginModal(){this.wrap.style.removeProperty("display"),!this.releaseModal&&(this.previousFocus=document.activeElement instanceof HTMLElement?document.activeElement:null,this.releaseModal=Xw(this.wrap))}close(){var i,t;if(!this.open||this.closing)return;const A=((i=this.stakePick)==null?void 0:i.onCancel)??((t=this.schoolLoadoutPick)==null?void 0:t.onCancel)??null;this.closing=!0,this.standDown(!1);const g=this.wrap.classList.contains("recoverystakepick");g&&this.wrap.classList.add("recovery-away"),this.frame.classList.add("shut");const e=!!this.duelPick;g||window.setTimeout(()=>{var C;return(C=this.onTuk)==null?void 0:C.call(this)},e?280:520),g||window.setTimeout(()=>this.wrap.classList.add("away"),e?360:700),window.setTimeout(()=>{var C,o,s;g&&(this.wrap.style.display="none"),this.wrap.classList.remove("show","away"),this.wrap.classList.remove("recovery-away"),this.wrap.classList.remove("duelpick"),this.setShown(!1),this.wrap.classList.remove("stakepick"),this.wrap.classList.remove("schoolloadoutpick"),this.wrap.classList.remove("recoverystakepick"),this.frame.classList.remove("shut"),this.stakePick=null,this.schoolLoadoutPick=null,this.closing=!1,this.duelPick=null,(C=this.releaseModal)==null||C.call(this),this.releaseModal=null,(o=this.previousFocus)!=null&&o.isConnected&&this.previousFocus.focus({preventScroll:!0}),this.previousFocus=null,(s=this.onClosed)==null||s.call(this),this.clearRewardTransfer(),A==null||A()},g?180:e?680:1240)}render(A=""){var Jg,Fg,cg,Wg,Pg,Ng,Zg,yA,Qe,Lg,sg,og,c,mg,Z,H,EA,cA,LA,kA,yg,kg,_g,Yg,Bg,Gg,$g,sI;const g=!!this.stakePick||!!this.schoolLoadoutPick||A==="stake"||A==="loadout",e=((Fg=(Jg=this.stakePick)==null?void 0:Jg.copy)==null?void 0:Fg.variant)==="recovery";this.wrap.classList.toggle("recoverystakepick",e);const i=((cg=this.schoolLoadoutPick)==null?void 0:cg.eligible)??((Wg=this.stakePick)==null?void 0:Wg.eligible)??((Pg=this.duelPick)==null?void 0:Pg.eligible),t=ZA=>jo(ZA)?h0().includes(ZA):this.save.owned.includes(ZA),C=this.box===3,o=this.box===4||this.box===5,s=lb(this.save),n=C?s:Bl(this.box),a=o?qM(this.save.championshipV1,this.save):[],B=ZA=>{var uI,JA;const nI=a.find(Kg=>Kg.pen===ZA);if(!nI||nI.state==="in")return null;if(nI.state==="held"||nI.state==="owed")return{text:`${(nI.state==="held"&&this.save.championshipV1.heldPen?(uI=Me.find($A=>$A.id===this.save.championshipV1.heldPen.by))==null?void 0:uI.rivals[0].name:(JA=ps(this.save,ZA))==null?void 0:JA.name)??"a friend"} has it`,owed:!0};const xg=nI.round;return{text:xg.rivals.length>2?"9C table":xg.rivals[0].name,owed:!1}};this.tray.innerHTML=n.map((ZA,nI)=>{var Vg;const xg=jo(ZA)?Number(t(ZA)):Ik(this.save,ZA),uI=xg>0,JA=!i||i.has(ZA),Kg=n.length>6?.0645:GoA,$A=(_q+nI*Kg)*100,lg=(_q+nI*Kg-.489)/.511*100,vg=TA[ZA],Qg=uI&&JA,Og=!!i&&!Qg,RI=((Vg=this.schoolLoadoutPick)==null?void 0:Vg.selected.includes(ZA))??!1,hg=i?Qg?`Select ${vg.name} for this match`:`${vg.name}, unavailable for this match`:uI?`Select ${vg.name}`:`View ${vg.name}`;return`<button type="button" class="slot${Qg?"":" locked"}${ZA===this.selected?" sel":""}${RI?" chosen":""}"
-                   data-id="${ZA}" data-state="${RI?"chosen":ZA===this.selected?"selected":Qg?"available":"unavailable"}"
-                   aria-label="${hg}" aria-pressed="${this.schoolLoadoutPick?RI:ZA===this.selected?"true":"false"}"
-                   ${Og?"disabled":""}
+class NoA {
+	constructor(A, g, e, i = () => {}, t = () => {}, C = () => {}) {
+		K(this, "wrap");
+		K(this, "tray");
+		K(this, "owner");
+		K(this, "tabs");
+		K(this, "lid");
+		K(this, "shutArt");
+		K(this, "actionsEl");
+		K(this, "frame");
+		K(this, "card");
+		K(this, "useBtn");
+		K(this, "shutBtn");
+		K(this, "rewardTransferTimers", []);
+		K(this, "releaseModal", null);
+		K(this, "selected");
+		K(this, "previousFocus", null);
+		K(this, "duelPick", null);
+		K(this, "stakePick", null);
+		K(this, "schoolLoadoutPick", null);
+		K(this, "box", 1);
+		K(this, "recoverySelections", {});
+		K(this, "onClosed", null);
+		K(this, "onTuk", null);
+		K(this, "onSelection", null);
+		K(this, "closing", !1);
+		(this.save = A),
+			(this.onEquip = g),
+			(this.matchInProgress = e),
+			(this.onRanking = i),
+			(this.onShare = t),
+			(this.onChallenge = C),
+			(this.selected = A.equipped),
+			(this.wrap = document.createElement("div")),
+			(this.wrap.className = "boxwrap"),
+			this.wrap.setAttribute("role", "dialog"),
+			this.wrap.setAttribute("aria-modal", "true"),
+			this.setShown(!1),
+			this.wrap.setAttribute("aria-label", "Your compass box");
+		const o = document.createElement("div");
+		(o.className = "boxstack"),
+			(this.tabs = document.createElement("div")),
+			(this.tabs.className = "boxtabs");
+		const s = document.createElement("div");
+		s.className = "tinframe";
+		const n = document.createElement("img");
+		(n.className = "tinart"), (n.src = dM), (n.alt = ""), (n.draggable = !1);
+		const a = document.createElement("div");
+		a.className = "tinlid";
+		const B = document.createElement("img");
+		(B.src = dM), (B.alt = ""), (B.draggable = !1), a.appendChild(B);
+		const Q = document.createElement("img");
+		(Q.className = "tinshut"),
+			(Q.src = Dw),
+			(Q.alt = ""),
+			(Q.draggable = !1),
+			(this.lid = a),
+			(this.shutArt = Q);
+		const l = document.createElement("div");
+		(l.className = "tinowner"),
+			(l.textContent = A.name === "me" ? "" : A.name),
+			(this.owner = l),
+			(this.tray = document.createElement("div")),
+			(this.tray.className = "tinslots"),
+			s.append(n, l, this.tray, a, Q),
+			(this.frame = s),
+			(this.card = document.createElement("div")),
+			(this.card.className = "pencard");
+		const h = document.createElement("div");
+		(h.className = "actions"),
+			(this.useBtn = document.createElement("button")),
+			(this.useBtn.className = "stampbtn"),
+			this.useBtn.addEventListener("click", (k) => {
+				var b, q;
+				if ((k.stopPropagation(), this.duelPick)) {
+					if (
+						!this.duelPick.eligible.has(this.selected) ||
+						this.selected === this.duelPick.current
+					) {
+						return;
+					}
+					this.duelPick.onConfirm(this.selected), this.close();
+					return;
+				}
+				if (this.stakePick) {
+					if (!this.stakePick.eligible.has(this.selected)) {
+						return;
+					}
+					const x = this.stakePick.onPick,
+						T = this.selected,
+						N =
+							((b = this.stakePick.copy) == null ? void 0 : b.variant) ===
+							"recovery";
+					(this.stakePick = null),
+						this.close(),
+						window.setTimeout(() => x(T), N ? 200 : 1260);
+					return;
+				}
+				if (this.schoolLoadoutPick) {
+					if (this.schoolLoadoutPick.selected.length !== 2) {
+						return;
+					}
+					const x = this.schoolLoadoutPick.onConfirm,
+						T = [...this.schoolLoadoutPick.selected];
+					(this.schoolLoadoutPick = null),
+						this.close(),
+						window.setTimeout(() => x(T), 1260);
+					return;
+				}
+				const R = (q = ps(this.save, this.selected)) == null ? void 0 : q.who;
+				if (R && !this.save.owned.includes(this.selected)) {
+					this.onChallenge(R);
+					return;
+				}
+				this.onEquip(this.selected), this.render();
+			}),
+			(this.shutBtn = document.createElement("button")),
+			(this.shutBtn.className = "shutbtn"),
+			(this.shutBtn.textContent = "shut the box"),
+			this.shutBtn.addEventListener("click", (k) => {
+				k.stopPropagation(), this.close();
+			}),
+			h.append(this.useBtn, this.shutBtn),
+			(this.actionsEl = h);
+		const p = document.createElement("button");
+		(p.className = "barbtn"),
+			(p.textContent = "share"),
+			p.addEventListener("click", (k) => {
+				k.stopPropagation(), this.onShare();
+			});
+		const u = document.createElement("button");
+		(u.className = "barbtn"),
+			(u.textContent = "ranking"),
+			u.addEventListener("click", (k) => {
+				k.stopPropagation(), this.onRanking();
+			});
+		const y = document.createElement("a");
+		(y.className = "barbtn"),
+			(y.href = mt.href),
+			(y.target = "_blank"),
+			(y.rel = "noopener noreferrer"),
+			(y.textContent = mt.chip),
+			y.setAttribute("aria-label", mt.label),
+			y.addEventListener("click", (k) => {
+				k.stopPropagation(), Mw("box");
+			});
+		const m = document.createElement("div");
+		(m.className = "boxbar"),
+			m.append(this.tabs, p),
+			m.append(u),
+			XB() && m.append(y);
+		const f = document.createElement("div");
+		(f.className = "boxrail"),
+			f.append(m, this.card, h),
+			o.append(s, f),
+			o.addEventListener("click", (k) => k.stopPropagation()),
+			this.wrap.appendChild(o),
+			this.wrap.addEventListener("click", () => this.close()),
+			this.wrap.addEventListener("keydown", (k) => {
+				if (k.key === "Escape") {
+					k.preventDefault(), this.close();
+					return;
+				}
+				zw(this.wrap, k);
+			}),
+			this.armResync(),
+			document.body.appendChild(this.wrap);
+	}
+	standDown(A) {
+		document.body.classList.toggle("boxopen", A);
+	}
+	armResync() {
+		const A = () => {
+			document.hidden || this.standDown(this.open);
+		};
+		document.addEventListener("visibilitychange", A),
+			window.addEventListener("pageshow", A);
+	}
+	get open() {
+		return this.wrap.classList.contains("show");
+	}
+	setShown(A) {
+		this.wrap.setAttribute("aria-hidden", A ? "false" : "true"),
+			(this.wrap.inert = !A);
+	}
+	show(A) {
+		(this.duelPick = null),
+			this.wrap.classList.remove("duelpick"),
+			(this.stakePick = null),
+			(this.schoolLoadoutPick = null),
+			this.wrap.classList.remove("stakepick"),
+			(this.selected = A ?? this.save.equipped),
+			(this.box = Jn(this.selected)),
+			this.reveal(A ? "won" : ""),
+			ug("box_opened", { duel: !1, won: !!A });
+	}
+	showLabBox(A, g = !1) {
+		(this.duelPick = null),
+			this.wrap.classList.remove("duelpick"),
+			(this.stakePick = null),
+			(this.schoolLoadoutPick = null),
+			this.wrap.classList.remove("stakepick"),
+			(this.selected =
+				A ??
+				this.save.owned.find((e) => Jn(e) === 3) ??
+				lb(this.save)[0] ??
+				this.save.equipped),
+			(this.box = 3),
+			this.clearRewardTransfer(),
+			this.wrap.classList.toggle("rewardtransfer", g && !!A),
+			this.reveal(A ? "won" : ""),
+			g && A && this.beginRewardTransfer(),
+			ug("box_opened", { duel: !1, won: !!A });
+	}
+	beginRewardTransfer() {
+		const A =
+			document.body.classList.contains("review-reduced-motion") ||
+			window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		if ((this.setRewardControlsInert(!0), A)) {
+			this.wrap.classList.add("rewardtransfergo", "rewardtransferlanded"),
+				this.setRewardControlsInert(!1);
+			return;
+		}
+		this.rewardTransferTimers.push(
+			window.setTimeout(() => {
+				this.wrap.classList.add("rewardtransfergo");
+			}, 1160)
+		),
+			this.rewardTransferTimers.push(
+				window.setTimeout(() => {
+					var g;
+					this.wrap.classList.add("rewardtransferlanded"),
+						this.setRewardControlsInert(!1),
+						(g = this.onTuk) == null || g.call(this),
+						this.shutBtn.focus({ preventScroll: !0 });
+				}, 2050)
+			);
+	}
+	clearRewardTransfer() {
+		for (const A of this.rewardTransferTimers) {
+			window.clearTimeout(A);
+		}
+		(this.rewardTransferTimers = []),
+			this.wrap.classList.remove(
+				"rewardtransfer",
+				"rewardtransfergo",
+				"rewardtransferlanded"
+			),
+			this.setRewardControlsInert(!1);
+	}
+	setRewardControlsInert(A) {
+		(this.tabs.inert = A), (this.actionsEl.inert = A);
+		const g = this.wrap.querySelector(".boxbar");
+		g && (g.inert = A);
+	}
+	showChampionshipTin(A, g = !1) {
+		(this.duelPick = null),
+			this.wrap.classList.remove("duelpick"),
+			(this.stakePick = null),
+			(this.schoolLoadoutPick = null),
+			this.wrap.classList.remove("stakepick");
+		const e = this.save.owned.find((i) => SQ(i)) ?? Bl(4)[0];
+		(this.selected = A ?? e),
+			(this.box = Jn(this.selected)),
+			this.box !== 4 && this.box !== 5 && (this.box = 4),
+			this.clearRewardTransfer(),
+			this.wrap.classList.toggle("rewardtransfer", g && !!A),
+			this.reveal(A ? "won" : ""),
+			g && A && this.beginRewardTransfer(),
+			ug("box_opened", { duel: !1, won: !!A });
+	}
+	showForDuel(A) {
+		(this.duelPick = {
+			current: A.selected,
+			eligible: new Set(A.eligible),
+			onConfirm: A.onConfirm,
+			onPreview: A.onPreview ?? (() => {}),
+		}),
+			(this.selected = A.selected),
+			(this.box = Jn(A.selected)),
+			this.wrap.classList.add("duelpick"),
+			this.reveal(""),
+			ug("box_opened", { duel: !0, won: !1 });
+	}
+	reveal(A) {
+		this.beginModal(),
+			this.setShown(!0),
+			this.wrap.setAttribute(
+				"aria-label",
+				this.duelPick
+					? "Choose your pen for this duel"
+					: this.box === 3
+						? "Your Chemistry Lab tin"
+						: this.box >= 6
+							? "Your pencil case"
+							: this.box >= 4
+								? "Your championship tin"
+								: "Your compass box"
+			),
+			(this.owner.textContent = this.save.name === "me" ? "" : this.save.name),
+			this.wrap.classList.add("show"),
+			this.render(A),
+			this.standDown(!0),
+			this.frame.classList.add("instant", "shut"),
+			this.frame.offsetWidth,
+			this.frame.classList.remove("instant");
+		const g =
+			this.wrap.classList.contains("rewardtransfer") &&
+			(document.body.classList.contains("review-reduced-motion") ||
+				window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+		window.setTimeout(
+			() => {
+				var i;
+				(i = this.onTuk) == null || i.call(this),
+					this.frame.classList.remove("shut");
+				const e = this.tray.querySelector(".slot.sel");
+				this.wrap.classList.contains("rewardtransfer") ||
+					e == null ||
+					e.focus({ preventScroll: !0 });
+			},
+			g ? 0 : this.duelPick ? 280 : 620
+		);
+	}
+	showForStake(A, g, e = () => {}, i, t = []) {
+		var o;
+		if (!A.length) {
+			return;
+		}
+		this.beginModal();
+		const C = [...new Set(t.filter((s) => A.includes(s)))];
+		if (
+			((this.stakePick = {
+				copy: i,
+				eligible: new Set(A),
+				onCancel: e,
+				onPick: g,
+				ranked: C,
+			}),
+			(this.selected =
+				C[0] ?? (A.includes(this.save.equipped) ? this.save.equipped : A[0])),
+			(this.box = Jn(this.selected)),
+			(this.recoverySelections = { [this.box]: this.selected }),
+			(this.owner.textContent = this.save.name === "me" ? "" : this.save.name),
+			this.setShown(!0),
+			this.wrap.setAttribute(
+				"aria-label",
+				(i == null ? void 0 : i.aria) ?? "Choose a pen for this school match"
+			),
+			this.wrap.classList.add("show", "stakepick"),
+			this.render("stake"),
+			this.standDown(!0),
+			(i == null ? void 0 : i.variant) === "recovery")
+		) {
+			if (!this.wrap.style.getPropertyValue("--recovery-bench")) {
+				const s = oQ("9d"),
+					n = document.createElement("canvas");
+				(n.width = 640), (n.height = 1024);
+				const a = n.getContext("2d");
+				a.translate(640, 0),
+					a.rotate(Math.PI / 2),
+					a.drawImage(s.image, 0, 0),
+					this.wrap.style.setProperty(
+						"--recovery-bench",
+						`url("${n.toDataURL("image/png")}")`
+					),
+					s.dispose();
+			}
+			this.frame.classList.remove("shut", "instant"),
+				(o = this.tray.querySelector(".slot.sel")) == null ||
+					o.focus({ preventScroll: !0 });
+			return;
+		}
+		this.frame.classList.add("instant", "shut"),
+			this.frame.offsetWidth,
+			this.frame.classList.remove("instant"),
+			window.setTimeout(() => {
+				var s, n;
+				(s = this.onTuk) == null || s.call(this),
+					this.frame.classList.remove("shut"),
+					(n = this.tray.querySelector(".slot.sel")) == null ||
+						n.focus({ preventScroll: !0 });
+			}, 620);
+	}
+	showForSchoolLoadout(A) {
+		if (A.eligible.length < 2) {
+			return;
+		}
+		this.beginModal();
+		const g = A.eligible.find((e) => e !== "reynolds-trimax") ?? A.eligible[0];
+		(this.stakePick = null),
+			(this.schoolLoadoutPick = {
+				championTry: A.championTry,
+				eligible: new Set(A.eligible),
+				onCancel: A.onCancel ?? (() => {}),
+				onConfirm: A.onConfirm,
+				selected: [],
+				tryNumber: A.tryNumber,
+			}),
+			(this.selected = g),
+			(this.box = Jn(this.selected)),
+			(this.owner.textContent = this.save.name === "me" ? "" : this.save.name),
+			this.setShown(!0),
+			this.wrap.classList.add("show", "stakepick", "schoolloadoutpick"),
+			this.wrap.setAttribute(
+				"aria-label",
+				A.championTry
+					? "Choose two backup pens for Class 9B"
+					: `Choose two pens for 9B try ${A.tryNumber}`
+			),
+			this.render("loadout"),
+			this.standDown(!0),
+			this.frame.classList.add("instant", "shut"),
+			this.frame.offsetWidth,
+			this.frame.classList.remove("instant"),
+			window.setTimeout(() => {
+				var e;
+				(e = this.onTuk) == null || e.call(this),
+					this.frame.classList.remove("shut");
+			}, 620);
+	}
+	selectionFeedback(A, g) {
+		var t;
+		const e = g,
+			i =
+				e.pointerType === "touch" ||
+				e.pointerType === "pen" ||
+				(!e.pointerType &&
+					g.detail > 0 &&
+					window.matchMedia("(pointer: coarse)").matches);
+		(t = this.onSelection) == null || t.call(this, A, i);
+	}
+	beginModal() {
+		this.wrap.style.removeProperty("display"),
+			!this.releaseModal &&
+				((this.previousFocus =
+					document.activeElement instanceof HTMLElement
+						? document.activeElement
+						: null),
+				(this.releaseModal = Xw(this.wrap)));
+	}
+	close() {
+		var i, t;
+		if (!this.open || this.closing) {
+			return;
+		}
+		const A =
+			((i = this.stakePick) == null ? void 0 : i.onCancel) ??
+			((t = this.schoolLoadoutPick) == null ? void 0 : t.onCancel) ??
+			null;
+		(this.closing = !0), this.standDown(!1);
+		const g = this.wrap.classList.contains("recoverystakepick");
+		g && this.wrap.classList.add("recovery-away"),
+			this.frame.classList.add("shut");
+		const e = !!this.duelPick;
+		g ||
+			window.setTimeout(
+				() => {
+					var C;
+					return (C = this.onTuk) == null ? void 0 : C.call(this);
+				},
+				e ? 280 : 520
+			),
+			g ||
+				window.setTimeout(() => this.wrap.classList.add("away"), e ? 360 : 700),
+			window.setTimeout(
+				() => {
+					var C, o, s;
+					g && (this.wrap.style.display = "none"),
+						this.wrap.classList.remove("show", "away"),
+						this.wrap.classList.remove("recovery-away"),
+						this.wrap.classList.remove("duelpick"),
+						this.setShown(!1),
+						this.wrap.classList.remove("stakepick"),
+						this.wrap.classList.remove("schoolloadoutpick"),
+						this.wrap.classList.remove("recoverystakepick"),
+						this.frame.classList.remove("shut"),
+						(this.stakePick = null),
+						(this.schoolLoadoutPick = null),
+						(this.closing = !1),
+						(this.duelPick = null),
+						(C = this.releaseModal) == null || C.call(this),
+						(this.releaseModal = null),
+						(o = this.previousFocus) != null &&
+							o.isConnected &&
+							this.previousFocus.focus({ preventScroll: !0 }),
+						(this.previousFocus = null),
+						(s = this.onClosed) == null || s.call(this),
+						this.clearRewardTransfer(),
+						A == null || A();
+				},
+				g ? 180 : e ? 680 : 1240
+			);
+	}
+	render(A = "") {
+		var Jg,
+			Fg,
+			cg,
+			Wg,
+			Pg,
+			Ng,
+			Zg,
+			yA,
+			Qe,
+			Lg,
+			sg,
+			og,
+			c,
+			mg,
+			Z,
+			H,
+			EA,
+			cA,
+			LA,
+			kA,
+			yg,
+			kg,
+			_g,
+			Yg,
+			Bg,
+			Gg,
+			$g,
+			sI;
+		const g =
+				!!this.stakePick ||
+				!!this.schoolLoadoutPick ||
+				A === "stake" ||
+				A === "loadout",
+			e =
+				((Fg = (Jg = this.stakePick) == null ? void 0 : Jg.copy) == null
+					? void 0
+					: Fg.variant) === "recovery";
+		this.wrap.classList.toggle("recoverystakepick", e);
+		const i =
+				((cg = this.schoolLoadoutPick) == null ? void 0 : cg.eligible) ??
+				((Wg = this.stakePick) == null ? void 0 : Wg.eligible) ??
+				((Pg = this.duelPick) == null ? void 0 : Pg.eligible),
+			t = (ZA) => (jo(ZA) ? h0().includes(ZA) : this.save.owned.includes(ZA)),
+			C = this.box === 3,
+			o = this.box === 4 || this.box === 5,
+			s = lb(this.save),
+			n = C ? s : Bl(this.box),
+			a = o ? qM(this.save.championshipV1, this.save) : [],
+			B = (ZA) => {
+				var uI, JA;
+				const nI = a.find((Kg) => Kg.pen === ZA);
+				if (!nI || nI.state === "in") {
+					return null;
+				}
+				if (nI.state === "held" || nI.state === "owed") {
+					return {
+						owed: !0,
+						text: `${(nI.state === "held" && this.save.championshipV1.heldPen ? ((uI = Me.find(($A) => $A.id === this.save.championshipV1.heldPen.by)) == null ? void 0 : uI.rivals[0].name) : (JA = ps(this.save, ZA)) == null ? void 0 : JA.name) ?? "a friend"} has it`,
+					};
+				}
+				const xg = nI.round;
+				return {
+					owed: !1,
+					text: xg.rivals.length > 2 ? "9C table" : xg.rivals[0].name,
+				};
+			};
+		this.tray.innerHTML = n
+			.map((ZA, nI) => {
+				var Vg;
+				const xg = jo(ZA) ? Number(t(ZA)) : Ik(this.save, ZA),
+					uI = xg > 0,
+					JA = !i || i.has(ZA),
+					Kg = n.length > 6 ? 0.0645 : GoA,
+					$A = (_q + nI * Kg) * 100,
+					lg = ((_q + nI * Kg - 0.489) / 0.511) * 100,
+					vg = TA[ZA],
+					Qg = uI && JA,
+					Og = !!i && !Qg,
+					RI =
+						((Vg = this.schoolLoadoutPick) == null
+							? void 0
+							: Vg.selected.includes(ZA)) ?? !1,
+					hg = i
+						? Qg
+							? `Select ${vg.name} for this match`
+							: `${vg.name}, unavailable for this match`
+						: uI
+							? `Select ${vg.name}`
+							: `View ${vg.name}`;
+				return `<button type="button" class="slot${Qg ? "" : " locked"}${ZA === this.selected ? " sel" : ""}${RI ? " chosen" : ""}"
+                   data-id="${ZA}" data-state="${RI ? "chosen" : ZA === this.selected ? "selected" : Qg ? "available" : "unavailable"}"
+                   aria-label="${hg}" aria-pressed="${this.schoolLoadoutPick ? RI : ZA === this.selected ? "true" : "false"}"
+                   ${Og ? "disabled" : ""}
                    style="--slot-top:${$A.toFixed(2)}%;--tray-slot-top:${lg.toFixed(2)}%">
                 <img src="${Ni(ZA)}" alt="" draggable="false" />
-                ${xg>1?`<i class="spare">&times;${xg}</i>`:""}
-              </button>${(()=>{const NI=o&&!uI?B(ZA):null;return NI?`<i class="slot-tape${NI.owed?" owed":""}" aria-hidden="true" style="--slot-top:${$A.toFixed(2)}%;--tray-slot-top:${lg.toFixed(2)}%">${NI.text}</i>`:""})()}`}).join("");for(const ZA of Array.from(this.tray.querySelectorAll(".slot")))ZA.addEventListener("click",nI=>{var uI,JA;nI.stopPropagation();const xg=ZA.dataset.id;if(!(xg===this.selected&&!this.schoolLoadoutPick)){if(this.selected=xg,e&&(this.recoverySelections[this.box]=this.selected),this.schoolLoadoutPick&&this.schoolLoadoutPick.eligible.has(this.selected)){const Kg=this.schoolLoadoutPick.selected,$A=Kg.indexOf(this.selected);$A>=0?Kg.splice($A,1):Kg.length<2?Kg.push(this.selected):Kg.splice(1,1,this.selected)}(uI=this.duelPick)==null||uI.onPreview(this.selected),this.selectionFeedback("pen",nI),this.render(),nI.detail===0&&((JA=this.tray.querySelector(`[data-id="${xg}"]`))==null||JA.focus({preventScroll:!0}))}});const Q=Bd(this.save)||this.save.owned.some(ZA=>Jn(ZA)===2),l=!!((Ng=this.save.labV1)!=null&&Ng.tinWon||(Zg=this.save.staffRoomV1)!=null&&Zg.rewardClaimed||s.length),h=ZA=>(ZA===3?s:Bl(ZA)).filter(xg=>t(xg)&&(!i||i.has(xg))).length,p=s.some(ZA=>!i||i.has(ZA)),u=l&&(!i||p),y=c$(this.save),m=ZA=>y&&(!i||h(ZA)>0),f=Q?[1,2]:[];u&&(f.length||f.push(1),f.push(3));for(const ZA of[4,5])m(ZA)&&(f.length||f.push(1),f.push(ZA));for(const ZA of[6,7])h0().length&&h(ZA)>0&&(f.length||f.push(1),f.push(ZA));this.tabs.innerHTML=f.length?f.map(ZA=>{const nI=g?h(ZA):0,xg=ZA===3?"lab box":ZA===4?"hero · 1":ZA===5?"hero · 2":ZA===6?"pencils · 1":ZA===7?"pencils · 2":`box ${ZA}`,uI=`${xg}${g?` · ${nI}`:""}`;return`<button class="boxtab${ZA===this.box?" on":""}" data-box="${ZA}" aria-pressed="${ZA===this.box}" aria-label="${g?`${nI} eligible ${nI===1?"pen":"pens"} in ${xg}`:xg}">${uI}</button>`}).join(""):"";for(const ZA of Array.from(this.tabs.querySelectorAll(".boxtab")))ZA.addEventListener("click",nI=>{var $A,lg,vg;nI.stopPropagation();const xg=Number(ZA.dataset.box);if(xg===this.box)return;this.box=xg;const uI=this.box===3?s:Bl(this.box),JA=e?this.recoverySelections[this.box]:void 0,Kg=(JA&&uI.includes(JA)&&(i!=null&&i.has(JA))?JA:void 0)??(($A=this.stakePick)==null?void 0:$A.ranked.find(Qg=>uI.includes(Qg)&&t(Qg)&&(!i||i.has(Qg))))??uI.find(Qg=>t(Qg)&&(!i||i.has(Qg)))??(i?void 0:uI[0]);Kg&&!uI.includes(this.selected)&&(this.selected=Kg),Kg&&((lg=this.duelPick)==null||lg.onPreview(this.selected)),this.selectionFeedback("box",nI),this.render(),nI.detail===0&&((vg=this.tabs.querySelector(`[data-box="${xg}"]`))==null||vg.focus({preventScroll:!0}))});const k=TA[this.selected],R=t(this.selected),b=jo(this.selected),q=BT(this.selected),x=ps(this.save,this.selected),T=(x==null?void 0:x.name)??null,N=!R&&WN(this.save,this.selected)?Zl(this.selected):null,Y=ZA=>N?`${ZA} has it. ${N}`:`${ZA} has it now`,V=SQ(this.selected)?Me.find(ZA=>ZA.pen===this.selected)??null:null,iA=V?V.rivals.map(ZA=>ZA.name).join(V.rivals.length===2?" + ":", "):null,lA=V?((yA=qM(this.save.championshipV1,this.save).find(ZA=>ZA.pen===this.selected))==null?void 0:yA.state)??"empty":null,FA=lA==="held"&&this.save.championshipV1.heldPen?Me.find(ZA=>ZA.id===this.save.championshipV1.heldPen.by):null,qA=FA?FA.rivals.map(ZA=>ZA.name).join(" + "):null,Ag=this.duelPick?this.selected==="reynolds045"&&!TM(this.save,this.selected)?"the reserve stays home while you own another":R?Ik(this.save,this.selected)>1?`you have ${Ik(this.save,this.selected)}. one of them is the stake.`:"yours. this is the one you stake.":T?`${T} has yours`:"win this in the class championship":this.selected==="reynolds045"?"the reserve. never at stake":b?"from the pencil case. never at stake":V?R?`won from: ${iA} · round ${V.round}`:qA?`${qA} has it now`:T?Y(T):lA==="empty"&&this.save.championshipV1.tin.length+1===V.round?`${iA} brought it. round ${V.round}`:`still with: ${iA} · round ${V.round}`:R?`won from: ${q??"the bench"}`:T?Y(T):`still with: ${q??"the bench"}`,QA=this.save.equipped===this.selected;this.card.className="pencard"+(A==="won"?" justwon":"")+(g?" stakecard":"")+(e?" recoverystakecard":""),this.card.toggleAttribute("aria-live",g);const Dg=this.schoolLoadoutPick;this.frame.classList.toggle("labbox",C),this.frame.classList.toggle("champbox",o);const ig=C&&Jn(this.selected)===3&&R?k:null,v=!!(ig!=null&&ig.staffBuild);this.card.innerHTML=Dg?`<div class="stakehead">
-          <span>Class 9B &middot; ${Dg.championTry?"Champion try":`try ${Dg.tryNumber} of 3`}</span>
-          <h3>${Dg.championTry?"Choose two backup pens":"Choose two pens"}</h3>
-          <p>${Dg.championTry?"TriMax fights first. These enter only after it loses.":"TriMax is held. Your first selected pen fights first."}</p>
+                ${xg > 1 ? `<i class="spare">&times;${xg}</i>` : ""}
+              </button>${(() => {
+								const NI = o && !uI ? B(ZA) : null;
+								return NI
+									? `<i class="slot-tape${NI.owed ? " owed" : ""}" aria-hidden="true" style="--slot-top:${$A.toFixed(2)}%;--tray-slot-top:${lg.toFixed(2)}%">${NI.text}</i>`
+									: "";
+							})()}`;
+			})
+			.join("");
+		for (const ZA of Array.from(this.tray.querySelectorAll(".slot"))) {
+			ZA.addEventListener("click", (nI) => {
+				var uI, JA;
+				nI.stopPropagation();
+				const xg = ZA.dataset.id;
+				if (!(xg === this.selected && !this.schoolLoadoutPick)) {
+					if (
+						((this.selected = xg),
+						e && (this.recoverySelections[this.box] = this.selected),
+						this.schoolLoadoutPick &&
+							this.schoolLoadoutPick.eligible.has(this.selected))
+					) {
+						const Kg = this.schoolLoadoutPick.selected,
+							$A = Kg.indexOf(this.selected);
+						$A >= 0
+							? Kg.splice($A, 1)
+							: Kg.length < 2
+								? Kg.push(this.selected)
+								: Kg.splice(1, 1, this.selected);
+					}
+					(uI = this.duelPick) == null || uI.onPreview(this.selected),
+						this.selectionFeedback("pen", nI),
+						this.render(),
+						nI.detail === 0 &&
+							((JA = this.tray.querySelector(`[data-id="${xg}"]`)) == null ||
+								JA.focus({ preventScroll: !0 }));
+				}
+			});
+		}
+		const Q = Bd(this.save) || this.save.owned.some((ZA) => Jn(ZA) === 2),
+			l = !!(
+				((Ng = this.save.labV1) != null && Ng.tinWon) ||
+				((Zg = this.save.staffRoomV1) != null && Zg.rewardClaimed) ||
+				s.length
+			),
+			h = (ZA) =>
+				(ZA === 3 ? s : Bl(ZA)).filter((xg) => t(xg) && (!i || i.has(xg)))
+					.length,
+			p = s.some((ZA) => !i || i.has(ZA)),
+			u = l && (!i || p),
+			y = c$(this.save),
+			m = (ZA) => y && (!i || h(ZA) > 0),
+			f = Q ? [1, 2] : [];
+		u && (f.length || f.push(1), f.push(3));
+		for (const ZA of [4, 5]) {
+			m(ZA) && (f.length || f.push(1), f.push(ZA));
+		}
+		for (const ZA of [6, 7]) {
+			h0().length && h(ZA) > 0 && (f.length || f.push(1), f.push(ZA));
+		}
+		this.tabs.innerHTML = f.length
+			? f
+					.map((ZA) => {
+						const nI = g ? h(ZA) : 0,
+							xg =
+								ZA === 3
+									? "lab box"
+									: ZA === 4
+										? "hero · 1"
+										: ZA === 5
+											? "hero · 2"
+											: ZA === 6
+												? "pencils · 1"
+												: ZA === 7
+													? "pencils · 2"
+													: `box ${ZA}`,
+							uI = `${xg}${g ? ` · ${nI}` : ""}`;
+						return `<button class="boxtab${ZA === this.box ? " on" : ""}" data-box="${ZA}" aria-pressed="${ZA === this.box}" aria-label="${g ? `${nI} eligible ${nI === 1 ? "pen" : "pens"} in ${xg}` : xg}">${uI}</button>`;
+					})
+					.join("")
+			: "";
+		for (const ZA of Array.from(this.tabs.querySelectorAll(".boxtab"))) {
+			ZA.addEventListener("click", (nI) => {
+				var $A, lg, vg;
+				nI.stopPropagation();
+				const xg = Number(ZA.dataset.box);
+				if (xg === this.box) {
+					return;
+				}
+				this.box = xg;
+				const uI = this.box === 3 ? s : Bl(this.box),
+					JA = e ? this.recoverySelections[this.box] : void 0,
+					Kg =
+						(JA && uI.includes(JA) && i != null && i.has(JA) ? JA : void 0) ??
+						(($A = this.stakePick) == null
+							? void 0
+							: $A.ranked.find(
+									(Qg) => uI.includes(Qg) && t(Qg) && (!i || i.has(Qg))
+								)) ??
+						uI.find((Qg) => t(Qg) && (!i || i.has(Qg))) ??
+						(i ? void 0 : uI[0]);
+				Kg && !uI.includes(this.selected) && (this.selected = Kg),
+					Kg && ((lg = this.duelPick) == null || lg.onPreview(this.selected)),
+					this.selectionFeedback("box", nI),
+					this.render(),
+					nI.detail === 0 &&
+						((vg = this.tabs.querySelector(`[data-box="${xg}"]`)) == null ||
+							vg.focus({ preventScroll: !0 }));
+			});
+		}
+		const k = TA[this.selected],
+			R = t(this.selected),
+			b = jo(this.selected),
+			q = BT(this.selected),
+			x = ps(this.save, this.selected),
+			T = (x == null ? void 0 : x.name) ?? null,
+			N = !R && WN(this.save, this.selected) ? Zl(this.selected) : null,
+			Y = (ZA) => (N ? `${ZA} has it. ${N}` : `${ZA} has it now`),
+			V = SQ(this.selected)
+				? (Me.find((ZA) => ZA.pen === this.selected) ?? null)
+				: null,
+			iA = V
+				? V.rivals
+						.map((ZA) => ZA.name)
+						.join(V.rivals.length === 2 ? " + " : ", ")
+				: null,
+			lA = V
+				? (((yA = qM(this.save.championshipV1, this.save).find(
+						(ZA) => ZA.pen === this.selected
+					)) == null
+						? void 0
+						: yA.state) ?? "empty")
+				: null,
+			FA =
+				lA === "held" && this.save.championshipV1.heldPen
+					? Me.find((ZA) => ZA.id === this.save.championshipV1.heldPen.by)
+					: null,
+			qA = FA ? FA.rivals.map((ZA) => ZA.name).join(" + ") : null,
+			Ag = this.duelPick
+				? this.selected === "reynolds045" && !TM(this.save, this.selected)
+					? "the reserve stays home while you own another"
+					: R
+						? Ik(this.save, this.selected) > 1
+							? `you have ${Ik(this.save, this.selected)}. one of them is the stake.`
+							: "yours. this is the one you stake."
+						: T
+							? `${T} has yours`
+							: "win this in the class championship"
+				: this.selected === "reynolds045"
+					? "the reserve. never at stake"
+					: b
+						? "from the pencil case. never at stake"
+						: V
+							? R
+								? `won from: ${iA} · round ${V.round}`
+								: qA
+									? `${qA} has it now`
+									: T
+										? Y(T)
+										: lA === "empty" &&
+												this.save.championshipV1.tin.length + 1 === V.round
+											? `${iA} brought it. round ${V.round}`
+											: `still with: ${iA} · round ${V.round}`
+							: R
+								? `won from: ${q ?? "the bench"}`
+								: T
+									? Y(T)
+									: `still with: ${q ?? "the bench"}`,
+			QA = this.save.equipped === this.selected;
+		(this.card.className =
+			"pencard" +
+			(A === "won" ? " justwon" : "") +
+			(g ? " stakecard" : "") +
+			(e ? " recoverystakecard" : "")),
+			this.card.toggleAttribute("aria-live", g);
+		const Dg = this.schoolLoadoutPick;
+		this.frame.classList.toggle("labbox", C),
+			this.frame.classList.toggle("champbox", o);
+		const ig = C && Jn(this.selected) === 3 && R ? k : null,
+			v = !!(ig != null && ig.staffBuild);
+		this.card.innerHTML = Dg
+			? `<div class="stakehead">
+          <span>Class 9B &middot; ${Dg.championTry ? "Champion try" : `try ${Dg.tryNumber} of 3`}</span>
+          <h3>${Dg.championTry ? "Choose two backup pens" : "Choose two pens"}</h3>
+          <p>${Dg.championTry ? "TriMax fights first. These enter only after it loses." : "TriMax is held. Your first selected pen fights first."}</p>
         </div>
         <div class="schoolloadout" aria-live="polite" aria-label="${Dg.selected.length} of 2 pens selected">
-          ${[0,1].map(ZA=>{const nI=Dg.selected[ZA];return nI?`<div class="schoolloadout-slot filled"><small>${Dg.championTry?`backup ${ZA+1}`:ZA===0?"fights first":"second pen"}</small>${WI(nI,"stakepen")}<b>${TA[nI].short}</b></div>`:`<div class="schoolloadout-slot"><small>${Dg.championTry?`backup ${ZA+1}`:ZA===0?"fights first":"second pen"}</small><span>select a pen</span></div>`}).join("")}
+          ${[0, 1]
+						.map((ZA) => {
+							const nI = Dg.selected[ZA];
+							return nI
+								? `<div class="schoolloadout-slot filled"><small>${Dg.championTry ? `backup ${ZA + 1}` : ZA === 0 ? "fights first" : "second pen"}</small>${WI(nI, "stakepen")}<b>${TA[nI].short}</b></div>`
+								: `<div class="schoolloadout-slot"><small>${Dg.championTry ? `backup ${ZA + 1}` : ZA === 0 ? "fights first" : "second pen"}</small><span>select a pen</span></div>`;
+						})
+						.join("")}
         </div>
-        <p class="schoolloadout-rule">A lost pen is out for this try. You cannot switch after a win.</p>`:e?`<div class="stakehead recoverystakehead">
+        <p class="schoolloadout-rule">A lost pen is out for this try. You cannot switch after a win.</p>`
+			: e
+				? `<div class="stakehead recoverystakehead">
           <span>${this.stakePick.copy.kicker}</span>
           <h3>${this.stakePick.copy.title}</h3>
           <p>${this.stakePick.copy.detail}</p>
@@ -21,40 +792,138 @@ class NoA{constructor(A,g,e,i=()=>{},t=()=>{},C=()=>{}){K(this,"wrap");K(this,"t
         <div class="recoverychoice">
           <small>your pick</small>
           <h4>${k.name}</h4>
-          <p>${cN(this.selected,[...this.stakePick.eligible]).join(" · ")||k.flavour}</p>
-        </div>`:g&&((Lg=(Qe=this.stakePick)==null?void 0:Qe.copy)!=null&&Lg.spare)?`<div class="stakehead spare">
+          <p>${cN(this.selected, [...this.stakePick.eligible]).join(" · ") || k.flavour}</p>
+        </div>`
+				: g &&
+						(Lg = (Qe = this.stakePick) == null ? void 0 : Qe.copy) != null &&
+						Lg.spare
+					? `<div class="stakehead spare">
           <span>${this.stakePick.copy.kicker}</span>
           <h3>${this.stakePick.copy.title}</h3>
         </div>
         <div class="stakechoice">
-          ${WI(this.selected,"stakepen")}
+          ${WI(this.selected, "stakepen")}
           <h4>${k.name}</h4>
-          ${this.stakePick.copy.against?`<p class="stakevs-cap">against ${this.stakePick.copy.against.whose} ${TA[this.stakePick.copy.against.pen].short}</p>${kH(k,TA[this.stakePick.copy.against.pen],{a:"yours",b:"theirs"})}`:`<p class="stakepen-trait">${k.flavour}</p>`}
-        </div>`:g?`<div class="stakehead">
-          <span>${((og=(sg=this.stakePick)==null?void 0:sg.copy)==null?void 0:og.kicker)??"Class 9B challenge · first to 2"}</span>
-          <h3>${((mg=(c=this.stakePick)==null?void 0:c.copy)==null?void 0:mg.title)??"Choose your fighting pen"}</h3>
-          <p>${((H=(Z=this.stakePick)==null?void 0:Z.copy)==null?void 0:H.detail)??"Tap another pen in the tray to switch."}</p>
+          ${this.stakePick.copy.against ? `<p class="stakevs-cap">against ${this.stakePick.copy.against.whose} ${TA[this.stakePick.copy.against.pen].short}</p>${kH(k, TA[this.stakePick.copy.against.pen], { a: "yours", b: "theirs" })}` : `<p class="stakepen-trait">${k.flavour}</p>`}
+        </div>`
+					: g
+						? `<div class="stakehead">
+          <span>${((og = (sg = this.stakePick) == null ? void 0 : sg.copy) == null ? void 0 : og.kicker) ?? "Class 9B challenge · first to 2"}</span>
+          <h3>${((mg = (c = this.stakePick) == null ? void 0 : c.copy) == null ? void 0 : mg.title) ?? "Choose your fighting pen"}</h3>
+          <p>${((H = (Z = this.stakePick) == null ? void 0 : Z.copy) == null ? void 0 : H.detail) ?? "Tap another pen in the tray to switch."}</p>
         </div>
         <div class="stakechoice">
           <span class="stakechoice-label">your fighting pen</span>
-          ${WI(this.selected,"stakepen")}
+          ${WI(this.selected, "stakepen")}
           <h4>${k.name}</h4>
           <p class="stakepen-trait">${k.flavour}</p>
         </div>
         <div class="stakeoutcomes" aria-label="What happens to this pen">
-          <div class="stakeoutcome win"><b>Win</b><span>${((cA=(EA=this.stakePick)==null?void 0:EA.copy)==null?void 0:cA.win)??"stays yours"}</span></div>
-          <div class="stakeoutcome lose"><b>Lose</b><span>${((kA=(LA=this.stakePick)==null?void 0:LA.copy)==null?void 0:kA.lose)??"Class 9B keeps it"}</span></div>
-        </div>`:C&&!this.duelPick&&(ig||!T)?ig?`<div class="pencard-mark">${cQ(18)}<span>THE LAB BOX</span></div>
-          ${WI(this.selected,"oncard")}
+          <div class="stakeoutcome win"><b>Win</b><span>${((cA = (EA = this.stakePick) == null ? void 0 : EA.copy) == null ? void 0 : cA.win) ?? "stays yours"}</span></div>
+          <div class="stakeoutcome lose"><b>Lose</b><span>${((kA = (LA = this.stakePick) == null ? void 0 : LA.copy) == null ? void 0 : kA.lose) ?? "Class 9B keeps it"}</span></div>
+        </div>`
+						: C && !this.duelPick && (ig || !T)
+							? ig
+								? `<div class="pencard-mark">${cQ(18)}<span>THE LAB BOX</span></div>
+          ${WI(this.selected, "oncard")}
           <h4>${ig.name}</h4>
-          <p>${v?ig.staffBuild.baseModel:ig.flavour}</p>
-          <p class="state">${xq(V1(this.save,this.selected))}</p>`:`<div class="pencard-mark">${cQ(18)}<span>THE LAB BOX</span></div>
+          <p>${v ? ig.staffBuild.baseModel : ig.flavour}</p>
+          <p class="state">${xq(V1(this.save, this.selected))}</p>`
+								: `<div class="pencard-mark">${cQ(18)}<span>THE LAB BOX</span></div>
           <h4>won in the chemistry lab</h4>
-          <p>all three benches, ${this.save.name==="me"?"your name":xq(this.save.name)} on the lid</p>
-          <p class="state">one empty channel waits</p>`:`${A==="won"?'<div class="wonflag">just won</div>':""}
-        <div class="pencard-mark">${cQ(18)}<span>${this.duelPick?"CHOOSE YOUR PEN":"PEN FIGHT"}</span></div>
-        ${WI(this.selected,"oncard")}
+          <p>all three benches, ${this.save.name === "me" ? "your name" : xq(this.save.name)} on the lid</p>
+          <p class="state">one empty channel waits</p>`
+							: `${A === "won" ? '<div class="wonflag">just won</div>' : ""}
+        <div class="pencard-mark">${cQ(18)}<span>${this.duelPick ? "CHOOSE YOUR PEN" : "PEN FIGHT"}</span></div>
+        ${WI(this.selected, "oncard")}
         <h4>${k.name}</h4>
         <p>${Ag}</p>
-        ${this.duelPick?this.selected===this.duelPick.current?'<p class="state">on the desk now</p>':this.duelPick.eligible.has(this.selected)?'<p class="state">ready to put down</p>':"":QA?'<p class="state">playing this next match</p>':""}
-        ${this.save.matchesWon>0?`<div class="cardtally"><span>matches won</span><b>${this.save.matchesWon}</b></div>`:""}`;const tg=TM(this.save,this.selected),PA=!!this.duelPick&&this.duelPick.eligible.has(this.selected)&&this.selected!==this.duelPick.current,KA=((yg=this.stakePick)==null?void 0:yg.eligible.has(this.selected))??!1,gg=((kg=this.schoolLoadoutPick)==null?void 0:kg.selected.length)===2;this.useBtn.disabled=this.schoolLoadoutPick?!gg:this.stakePick?!KA:this.duelPick?!PA:!R||QA||!tg,this.actionsEl.classList.toggle("inert",this.useBtn.disabled),this.shutBtn.textContent=this.stakePick||this.schoolLoadoutPick?((Yg=(_g=this.stakePick)==null?void 0:_g.copy)==null?void 0:Yg.back)??"back to the corridor":this.duelPick?"back to the terms":"shut the box",this.useBtn.textContent=this.schoolLoadoutPick?gg?this.schoolLoadoutPick.championTry?"take these backups":"continue with these pens":`choose ${2-this.schoolLoadoutPick.selected.length} more`:this.stakePick?KA?e?((Gg=(Bg=this.stakePick.copy)==null?void 0:Bg.primaryFor)==null?void 0:Gg.call(Bg,k.short))??`play with ${k.short}`:(($g=this.stakePick.copy)==null?void 0:$g.primary)??"fight with this pen":"not for this fight":this.duelPick?PA?"put this one down":this.selected===this.duelPick.current?"this one is down":"not yours yet":T&&!R?`win it back off ${T.toLowerCase()}`:R?b?"pick it in a duel or practice":tg?QA?this.matchInProgress()?"playing this next match":"this is your pen":this.matchInProgress()?"use from next match":"use this pen":"reserve pen":"not yours yet",this.schoolLoadoutPick?this.useBtn.setAttribute("aria-label",gg?`Confirm ${this.schoolLoadoutPick.selected.map(ZA=>TA[ZA].name).join(" and ")} for Class 9B.`:`Choose ${2-this.schoolLoadoutPick.selected.length} more pen.`):g?this.useBtn.setAttribute("aria-label",KA?(sI=this.stakePick)!=null&&sI.copy?`${this.stakePick.copy.aria} ${k.name}.`:`Fight Class 9B with ${k.name}. If you lose, Class 9B keeps this pen until you win it back.`:`${k.name} cannot be used for the Class 9B challenge.`):this.useBtn.removeAttribute("aria-label")}}
+        ${this.duelPick ? (this.selected === this.duelPick.current ? '<p class="state">on the desk now</p>' : this.duelPick.eligible.has(this.selected) ? '<p class="state">ready to put down</p>' : "") : QA ? '<p class="state">playing this next match</p>' : ""}
+        ${this.save.matchesWon > 0 ? `<div class="cardtally"><span>matches won</span><b>${this.save.matchesWon}</b></div>` : ""}`;
+		const tg = TM(this.save, this.selected),
+			PA =
+				!!this.duelPick &&
+				this.duelPick.eligible.has(this.selected) &&
+				this.selected !== this.duelPick.current,
+			KA =
+				((yg = this.stakePick) == null
+					? void 0
+					: yg.eligible.has(this.selected)) ?? !1,
+			gg =
+				((kg = this.schoolLoadoutPick) == null
+					? void 0
+					: kg.selected.length) === 2;
+		(this.useBtn.disabled = this.schoolLoadoutPick
+			? !gg
+			: this.stakePick
+				? !KA
+				: this.duelPick
+					? !PA
+					: !R || QA || !tg),
+			this.actionsEl.classList.toggle("inert", this.useBtn.disabled),
+			(this.shutBtn.textContent =
+				this.stakePick || this.schoolLoadoutPick
+					? (((Yg = (_g = this.stakePick) == null ? void 0 : _g.copy) == null
+							? void 0
+							: Yg.back) ?? "back to the corridor")
+					: this.duelPick
+						? "back to the terms"
+						: "shut the box"),
+			(this.useBtn.textContent = this.schoolLoadoutPick
+				? gg
+					? this.schoolLoadoutPick.championTry
+						? "take these backups"
+						: "continue with these pens"
+					: `choose ${2 - this.schoolLoadoutPick.selected.length} more`
+				: this.stakePick
+					? KA
+						? e
+							? (((Gg =
+									(Bg = this.stakePick.copy) == null
+										? void 0
+										: Bg.primaryFor) == null
+									? void 0
+									: Gg.call(Bg, k.short)) ?? `play with ${k.short}`)
+							: ((($g = this.stakePick.copy) == null ? void 0 : $g.primary) ??
+								"fight with this pen")
+						: "not for this fight"
+					: this.duelPick
+						? PA
+							? "put this one down"
+							: this.selected === this.duelPick.current
+								? "this one is down"
+								: "not yours yet"
+						: T && !R
+							? `win it back off ${T.toLowerCase()}`
+							: R
+								? b
+									? "pick it in a duel or practice"
+									: tg
+										? QA
+											? this.matchInProgress()
+												? "playing this next match"
+												: "this is your pen"
+											: this.matchInProgress()
+												? "use from next match"
+												: "use this pen"
+										: "reserve pen"
+								: "not yours yet"),
+			this.schoolLoadoutPick
+				? this.useBtn.setAttribute(
+						"aria-label",
+						gg
+							? `Confirm ${this.schoolLoadoutPick.selected.map((ZA) => TA[ZA].name).join(" and ")} for Class 9B.`
+							: `Choose ${2 - this.schoolLoadoutPick.selected.length} more pen.`
+					)
+				: g
+					? this.useBtn.setAttribute(
+							"aria-label",
+							KA
+								? (sI = this.stakePick) != null && sI.copy
+									? `${this.stakePick.copy.aria} ${k.name}.`
+									: `Fight Class 9B with ${k.name}. If you lose, Class 9B keeps this pen until you win it back.`
+								: `${k.name} cannot be used for the Class 9B challenge.`
+						)
+					: this.useBtn.removeAttribute("aria-label");
+	}
+}

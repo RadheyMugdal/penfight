@@ -350,14 +350,14 @@ export default function PenFightHome(): JSX.Element {
 									<span>Friction: {pen.friction}</span>
 									<span>•</span>
 									<span>Bounce: {pen.restitution}</span>
-									{pen.shape !== undefined ? (
+									{pen.shape === undefined ? null : (
 										<>
 											<span>•</span>
 											<span className="font-bold text-amber-700 uppercase">
 												{pen.shape}
 											</span>
 										</>
-									) : null}
+									)}
 								</div>
 							</button>
 						);

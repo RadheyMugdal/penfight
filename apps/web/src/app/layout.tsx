@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import Providers from "@/components/providers";
 import "../index.css";
 
 export const metadata: Metadata = {
-	title: "Pen Fight · the unofficial sport of the last bench",
 	description:
 		"You spent half of school flicking a pen across the desk while the teacher wrote on the board. Same game, same pens, real stakes, now in your browser: winner keeps the pen, and at the end of the bench, the Trimax.",
 	icons: {
-		icon: [
-			{ url: "/favicon-32.png", sizes: "32x32" },
-			{ url: "/favicon-16.png", sizes: "16x16" },
-		],
 		apple: "/apple-touch-icon.png",
+		icon: [
+			{ sizes: "32x32", url: "/favicon-32.png" },
+			{ sizes: "16x16", url: "/favicon-16.png" },
+		],
 	},
 	manifest: "/site.webmanifest",
+	title: "Pen Fight · the unofficial sport of the last bench",
 };
 
 export default function RootLayout({
@@ -25,9 +24,9 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
-				<meta name="pf-bundle" content="index-DyrlfgZ-.js" />
-				<meta name="theme-color" content="#c4691a" />
-				<meta name="color-scheme" content="dark" />
+				<meta content="index-DyrlfgZ-.js" name="pf-bundle" />
+				<meta content="#c4691a" name="theme-color" />
+				<meta content="dark" name="color-scheme" />
 				<link
 					as="font"
 					crossOrigin="anonymous"

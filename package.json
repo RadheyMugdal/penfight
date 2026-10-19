@@ -43,12 +43,12 @@
     "dev": "turbo run dev",
     "dev:vercel": "bunx vercel dev -L",
     "dev:web": "turbo run dev -F web --",
-    "realtime": "bun packages/api/src/realtime-server.ts",
     "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
     "env:preview": "tsx scripts/sync-vercel-env.ts preview",
     "env:production": "tsx scripts/sync-vercel-env.ts production",
     "fix": "ultracite fix",
-    "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/"
+    "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
+    "realtime": "bun packages/api/src/realtime-server.ts"
   },
   "overrides": {
     "@next/env": "npm:@varlock/nextjs-integration@1.2.2"

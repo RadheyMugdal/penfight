@@ -218,12 +218,7 @@ export class Desk3DScene {
 		});
 
 		if (spec.shape === "tri") {
-			const triGeo = new CylinderGeometry(
-				radius,
-				radius,
-				length * 0.72,
-				3,
-			);
+			const triGeo = new CylinderGeometry(radius, radius, length * 0.72, 3);
 			const barrel = new Mesh(triGeo, bodyMat);
 			barrel.rotation.x = Math.PI / 2;
 			barrel.castShadow = true;
@@ -233,7 +228,7 @@ export class Desk3DScene {
 				radius * 1.05,
 				radius * 1.05,
 				length * 0.28,
-				3,
+				3
 			);
 			const cap = new Mesh(capGeo, capMat);
 			cap.rotation.x = Math.PI / 2;
@@ -241,12 +236,7 @@ export class Desk3DScene {
 			cap.castShadow = true;
 			penGroup.add(cap);
 		} else if (spec.shape === "hex") {
-			const hexGeo = new CylinderGeometry(
-				radius,
-				radius,
-				length * 0.88,
-				6,
-			);
+			const hexGeo = new CylinderGeometry(radius, radius, length * 0.88, 6);
 			const barrel = new Mesh(hexGeo, bodyMat);
 			barrel.rotation.x = Math.PI / 2;
 			barrel.castShadow = true;
@@ -255,18 +245,13 @@ export class Desk3DScene {
 			const coneGeo = new ConeGeometry(radius, length * 0.12, 6);
 			const woodCone = new Mesh(
 				coneGeo,
-				new MeshStandardMaterial({ color: "#d97706", roughness: 0.8 }),
+				new MeshStandardMaterial({ color: "#d97706", roughness: 0.8 })
 			);
 			woodCone.rotation.x = Math.PI / 2;
 			woodCone.position.z = halfL * 0.94;
 			penGroup.add(woodCone);
 		} else {
-			const barrelGeo = new CylinderGeometry(
-				radius,
-				radius,
-				length * 0.68,
-				16,
-			);
+			const barrelGeo = new CylinderGeometry(radius, radius, length * 0.68, 16);
 			const barrel = new Mesh(barrelGeo, bodyMat);
 			barrel.rotation.x = Math.PI / 2;
 			barrel.castShadow = true;
@@ -276,7 +261,7 @@ export class Desk3DScene {
 				radius * 1.08,
 				radius * 1.08,
 				length * 0.32,
-				16,
+				16
 			);
 			const cap = new Mesh(capGeo, capMat);
 			cap.rotation.x = Math.PI / 2;
@@ -293,7 +278,7 @@ export class Desk3DScene {
 			const clipGeo = new BoxGeometry(
 				radius * 0.45,
 				radius * 0.7,
-				length * 0.22,
+				length * 0.22
 			);
 			const clip = new Mesh(clipGeo, capMat);
 			clip.position.set(0, radius * 1.25, -halfL * 0.6);
@@ -311,25 +296,25 @@ export class Desk3DScene {
 			isOut: boolean;
 			position: { x: number; y: number; z: number };
 			rotation: { w: number; x: number; y: number; z: number };
-		}>,
+		}>
 	): void {
 		for (let i = 0; i < pens.length; i += 1) {
 			const penData = pens[i];
 			const mesh = this.penMeshes[i];
-			if (!penData || !mesh) {
+			if (!(penData && mesh)) {
 				continue;
 			}
 
 			mesh.position.set(
 				penData.position.x,
 				penData.position.y,
-				penData.position.z,
+				penData.position.z
 			);
 			mesh.quaternion.set(
 				penData.rotation.x,
 				penData.rotation.y,
 				penData.rotation.z,
-				penData.rotation.w,
+				penData.rotation.w
 			);
 
 			if (penData.isOut && penData.position.y < -0.15) {
@@ -387,7 +372,7 @@ export class Desk3DScene {
 	screenToDeskPoint(
 		clientX: number,
 		clientY: number,
-		rect: DOMRect,
+		rect: DOMRect
 	): Vector3 | null {
 		const ndcX = ((clientX - rect.left) / rect.width) * 2 - 1;
 		const ndcY = -((clientY - rect.top) / rect.height) * 2 + 1;
