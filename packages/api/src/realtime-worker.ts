@@ -143,7 +143,7 @@ export class RealtimeRoom {
 		// 3. Presence Track
 		if (
 			event === "presence" &&
-			payloadRecord.type === "presence" &&
+			(payloadRecord.type === "presence" || payloadRecord.event === "track") &&
 			payloadRecord.event === "track"
 		) {
 			const track = payloadRecord.payload as Record<string, unknown> | undefined;
