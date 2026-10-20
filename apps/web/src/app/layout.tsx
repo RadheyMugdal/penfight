@@ -47,7 +47,7 @@ export default function RootLayout({
 					href="/assets/art/school-classroom-door.jpg"
 					rel="preload"
 				/>
-				<link href="/assets/index-CueJ_IL1.css" rel="stylesheet" />
+				<link href="/assets/index-CueJ_IL1.css?v=nocaptcha" rel="stylesheet" />
 			</head>
 			<body>
 				<Providers>{children}</Providers>

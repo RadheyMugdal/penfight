@@ -16,7 +16,7 @@ export default function DeskPage() {
 			<div className="vignette" />
 			{mounted ? (
 				<Script
-					src="/assets/index-DyrlfgZ-.js"
+					src="/assets/index-DyrlfgZ-.js?v=nocaptcha"
 					strategy="afterInteractive"
 					type="module"
 				/>

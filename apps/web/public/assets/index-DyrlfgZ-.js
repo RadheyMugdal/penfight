@@ -190,7 +190,7 @@ window.addEventListener("pf:boot-ready", U, { once: !0 });
 window.addEventListener("pf:boot-failed", _, { once: !0 });
 const v = window.setTimeout(() => h(), 200),
 	L = window.setTimeout(() => h("slow"), 25e3);
-k(() => import("./main-NZF1ugMT.js").then((t) => t.bZ), []).catch(_);
+k(() => import("./main-NZF1ugMT.js?v=nocaptcha").then((t) => t.bZ), []).catch(_);
 export {
 	$ as d,
 	D as P,
