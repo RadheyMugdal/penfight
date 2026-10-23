@@ -24,7 +24,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
-				<meta content="index-DyrlfgZ-.js" name="pf-bundle" />
+				<meta content="index-pfd4.js" name="pf-bundle" />
 				<meta content="#c4691a" name="theme-color" />
 				<meta content="dark" name="color-scheme" />
 				<link

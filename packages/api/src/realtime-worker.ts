@@ -64,6 +64,174 @@ interface RealtimeNamespace {
 
 interface RealtimeEnv {
 	REALTIME: RealtimeNamespace;
+	DUEL: RealtimeNamespace;
+}
+
+// Functions whose authority lives in a per-room DuelRoom DO instead of being
+// faked inside the game bundle: seats, bout terms, the turn log every browser
+// replays from, and results — for duels and 3-player group desks. Everything
+// else still 404s here.
+const DUEL_ROOM_FUNCTIONS = new Set([
+	"duel_create_room_v2",
+	"duel_join_room_v2",
+	"duel_rename_v2",
+	"duel_ready_v3",
+	"duel_bout_status_v2",
+	"duel_touch_v3",
+	"duel_commit_turn_v1",
+	"duel_turns_since_v1",
+	"duel_report_v2",
+	"duel_concede_v3",
+	"duel_claim_abandon_v3",
+	"duel_finish_v1",
+	"group_create_room_v2",
+	"group_join_room_v2",
+	"group_status_v1",
+	"group_present_v1",
+	"group_ready_v2",
+	"group_commit_turn_v2",
+	"group_turns_since_v2",
+	"group_commit_frame_v1",
+	"group_leave_v1",
+	"group_report_absent_v1",
+]);
+
+const RPC_PATH_PREFIX = "/rest/v1/rpc/";
+
+// Browsers do not enforce CORS on WebSockets, but they do on these RPC POSTs.
+const ALLOWED_ORIGIN_SUFFIXES = [".vercel.app", ".penfight.xyz"];
+const ALLOWED_ORIGINS = new Set([
+	"https://penfight.xyz",
+	"https://penfight.radheymugdal.com",
+	"http://localhost:3001",
+	"http://127.0.0.1:3001",
+]);
+
+function isAllowedOrigin(origin: string): boolean {
+	if (ALLOWED_ORIGINS.has(origin)) {
+		return true;
+	}
+	let host: string;
+	try {
+		host = new URL(origin).hostname;
+	} catch {
+		return false;
+	}
+	return ALLOWED_ORIGIN_SUFFIXES.some((suffix) => host.endsWith(suffix));
+}
+
+function corsHeaders(origin: string): Record<string, string> {
+	if (!isAllowedOrigin(origin)) {
+		return {};
+	}
+	return {
+		"Access-Control-Allow-Headers": "Content-Type, Authorization, apikey",
+		"Access-Control-Allow-Methods": "POST, OPTIONS",
+		"Access-Control-Allow-Origin": origin,
+		"Access-Control-Max-Age": "86400",
+		Vary: "Origin",
+	};
+}
+
+// The game bundle authenticates with a self-minted unsigned token whose `sub`
+// is its persistent localStorage player id. That is all the identity the
+// client has today, so it is what seats are keyed on — spoofable, but no
+// weaker than the previous all-client-side scheme, and now at least the two
+// browsers agree on who is who. Signed tokens are a later hardening step.
+function playerIdFromAuth(header: string | null): string {
+	if (!header?.startsWith("Bearer ")) {
+		return "";
+	}
+	const segments = header.slice("Bearer ".length).split(".");
+	const payload = segments[1];
+	if (!payload) {
+		return "";
+	}
+	try {
+		const padded = payload.replace(/-/g, "+").replace(/_/g, "/");
+		const claims = JSON.parse(atob(padded)) as Record<string, unknown>;
+		return typeof claims.sub === "string" ? claims.sub : "";
+	} catch {
+		return "";
+	}
+}
+
+function roomCodeFromBody(body: Record<string, unknown>): string | null {
+	if (typeof body.p_code === "string" && body.p_code) {
+		return body.p_code;
+	}
+	if (typeof body.p_room === "string" && body.p_room.startsWith("room_")) {
+		return body.p_room.slice("room_".length);
+	}
+	if (typeof body.p_room === "string" && body.p_room.startsWith("group_")) {
+		return body.p_room.slice("group_".length);
+	}
+	return null;
+}
+
+async function handleRpc(
+	request: Request,
+	env: RealtimeEnv,
+	fn: string,
+	cors: Record<string, string>,
+): Promise<Response> {
+	if (!DUEL_ROOM_FUNCTIONS.has(fn)) {
+		return new Response(
+			JSON.stringify({ code: "invalid", message: `unknown function ${fn}` }),
+			{
+				headers: { ...cors, "Content-Type": "application/json" },
+				status: 404,
+			},
+		);
+	}
+
+	const raw = await request.text();
+	let body: Record<string, unknown>;
+	try {
+		body = JSON.parse(raw) as Record<string, unknown>;
+	} catch {
+		return new Response(
+			JSON.stringify({ code: "invalid", message: "invalid request body" }),
+			{
+				headers: { ...cors, "Content-Type": "application/json" },
+				status: 400,
+			},
+		);
+	}
+
+	const code = roomCodeFromBody(body);
+	const playerId = playerIdFromAuth(request.headers.get("Authorization"));
+	if (!code) {
+		return new Response(
+			JSON.stringify({ code: "invalid", message: "invalid room" }),
+			{
+				headers: { ...cors, "Content-Type": "application/json" },
+				status: 400,
+			},
+		);
+	}
+
+	const normalised = code.trim().toLowerCase();
+	// Duels and group desks live in separate objects even if codes collide.
+	const kind = fn.startsWith("group_") ? "group" : "duel";
+	const stub = env.DUEL.get(env.DUEL.idFromName(`${kind}:${normalised}`));
+	const answer = await stub.fetch(
+		new Request("https://duel.internal/rpc", {
+			body: JSON.stringify({ ...body, p_code: normalised }),
+			headers: {
+				"Content-Type": "application/json",
+				"X-Penfight-Fn": fn,
+				"X-Penfight-Player": playerId,
+			},
+			method: "POST",
+		}),
+	);
+
+	const headers = new Headers(answer.headers);
+	for (const [key, value] of Object.entries(cors)) {
+		headers.set(key, value);
+	}
+	return new Response(answer.body, { headers, status: answer.status });
 }
 
 export default {
@@ -73,11 +241,33 @@ export default {
 			const stub = env.REALTIME.get(env.REALTIME.idFromName("global"));
 			return stub.fetch(request);
 		}
+
+		const origin = request.headers.get("Origin") ?? "";
+		const cors = corsHeaders(origin);
+		const url = new URL(request.url);
+
+		if (request.method === "OPTIONS") {
+			return new Response(null, { headers: cors, status: 204 });
+		}
+
+		if (
+			request.method === "POST" &&
+			url.pathname.startsWith(RPC_PATH_PREFIX)
+		) {
+			if (origin && Object.keys(cors).length === 0) {
+				return new Response("origin not allowed", { status: 403 });
+			}
+			const fn = url.pathname.slice(RPC_PATH_PREFIX.length);
+			return handleRpc(request, env, fn, cors);
+		}
+
 		return new Response("Pen Fight Realtime WebSocket Server Running!", {
 			status: 200,
 		});
 	},
 };
+
+export { DuelRoom } from "./duel-room";
 
 export class RealtimeRoom {
 	private readonly state: DurableObjectStateLike;

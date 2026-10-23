@@ -16,7 +16,7 @@ export default function Home() {
 			<div className="vignette" />
 			{mounted ? (
 				<Script
-					src="/assets/index-DyrlfgZ-.js?v=readyfix"
+					src="/assets/index-pfd4.js"
 					strategy="afterInteractive"
 					type="module"
 				/>

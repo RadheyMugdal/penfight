@@ -8,6 +8,10 @@
       {
         "name": "REALTIME",
         "class_name": "RealtimeRoom"
+      },
+      {
+        "name": "DUEL",
+        "class_name": "DuelRoom"
       }
     ]
   },
@@ -15,6 +19,10 @@
     {
       "tag": "v1",
       "new_sqlite_classes": ["RealtimeRoom"]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["DuelRoom"]
     }
   ],
   "observability": {
