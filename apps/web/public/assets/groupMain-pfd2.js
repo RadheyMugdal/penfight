@@ -880,7 +880,7 @@ class tn {
 					revision: 0,
 					round: 1,
 					roundWinners: [],
-					scores: [0, 0, 0],
+					scores: N.map(() => 0),
 					turn: 1,
 					winner: null,
 					withdrawn: [],
@@ -988,7 +988,7 @@ class tn {
 	assertValid() {
 		const e = this.value;
 		if (
-			e.scores.length !== 3 ||
+			e.scores.length !== N.length ||
 			e.outs.some((a) => !N.includes(a)) ||
 			e.withdrawn.some((a) => !N.includes(a))
 		) {
@@ -2112,7 +2112,7 @@ async function fo(r = null) {
 				});
 			const t = l == null ? void 0 : l.state();
 			V.groupOuts = (t == null ? void 0 : t.outs) ?? [];
-			const n = (t == null ? void 0 : t.scores) ?? [0, 0, 0];
+			const n = (t == null ? void 0 : t.scores) ?? N.map(() => 0);
 			V.drawGroup(n);
 		},
 		Dt = () => {
@@ -2522,7 +2522,7 @@ async function fo(r = null) {
 			if (
 				!l ||
 				t.package.bout !== s.matchNo ||
-				t.package.penOrder.length !== 3 ||
+				t.package.penOrder.length !== N.length ||
 				!re.every((m) => t.package.penOrder.includes(m))
 			) {
 				return !1;
@@ -3276,7 +3276,7 @@ ${t.url}`;
 			) {
 				ce(
 					(t == null ? void 0 : t.winner) ?? null,
-					(t == null ? void 0 : t.scores) ?? [0, 0, 0],
+					(t == null ? void 0 : t.scores) ?? N.map(() => 0),
 					F,
 					() => {
 						pe();
@@ -3306,7 +3306,7 @@ ${t.url}`;
 				return (_e = 0), zt(), !1;
 			}
 			const n = s.members.filter((g) => g.present);
-			if (n.length < 3) {
+			if (n.length < N.length) {
 				return (_e = 0), zt(), !1;
 			}
 			const o = n.find((g) => g.userId === s.userId),
@@ -3442,7 +3442,7 @@ ${t.url}`;
 				const i = (l == null ? void 0 : l.state()) ?? s.state;
 				ce(
 					(i == null ? void 0 : i.winner) ?? null,
-					(i == null ? void 0 : i.scores) ?? [0, 0, 0],
+					(i == null ? void 0 : i.scores) ?? N.map(() => 0),
 					!0,
 					() => {},
 					() => {
@@ -3488,7 +3488,7 @@ ${t.url}`;
 				const i = (l == null ? void 0 : l.state()) ?? s.state;
 				ce(
 					(i == null ? void 0 : i.winner) ?? null,
-					(i == null ? void 0 : i.scores) ?? [0, 0, 0],
+					(i == null ? void 0 : i.scores) ?? N.map(() => 0),
 					!1,
 					o,
 					() => {
@@ -3634,7 +3634,7 @@ ${t.url}`;
 		}
 		if (s.status === "ended" && s.state) {
 			if (
-				s.members.filter((_) => _.present).length < 3 &&
+				s.members.filter((_) => _.present).length < N.length &&
 				s.members.some((_) => _.ready)
 			) {
 				Wt(
