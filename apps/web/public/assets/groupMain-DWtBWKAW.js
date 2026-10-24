@@ -660,7 +660,7 @@ class Xa {
 			E = P.map((b) => c[b.seat]).join("–"),
 			H =
 				a === null
-					? "all three went out"
+					? (N.length === 3 ? "all three went out" : "everyone went out")
 					: a === e.mySeat
 						? `you beat ${$.map((b) => J(b.name)).join(" and ")}<br>by ${E}`
 						: `${J(q)} beat you<br>by ${E}`,
@@ -687,12 +687,12 @@ class Xa {
 						: 0;
 			}),
 			D =
-				$.length === 2
+				$.length >= 2
 					? `<div class="duelseries group-series">
-           <p class="quiet who rematchcopy">Matches so far between you, ${J($[0].name)} and ${J($[1].name)}.</p>
+           <p class="quiet who rematchcopy">Matches so far between you and ${$.map((b) => J(b.name)).join(", ")}.</p>
            <table>
-             <thead><tr><th>you</th><th>${this.named($[0])}</th><th>${this.named($[1])}</th></tr></thead>
-             <tbody><tr><td>${s}</td><td>${Y[0]}</td><td>${Y[1]}</td></tr></tbody>
+             <thead><tr><th>you</th>${$.map((b) => `<th>${this.named(b)}</th>`).join("")}</tr></thead>
+             <tbody><tr><td>${s}</td>${Y.map((y) => `<td>${y}</td>`).join("")}</tr></tbody>
            </table>
          </div>`
 					: "",
@@ -774,15 +774,15 @@ class Xa {
 	}
 	dropout(e, a, c, d, f, p) {
 		var q, E;
-		const v = c ? "checking seat…" : a ? "continue ✓" : "continue with two",
+		const v = c ? "checking seat…" : a ? "continue ✓" : "continue match",
 			P = c
 				? "saving your choice…"
 				: a
-					? `${d}/2 agreed · waiting for the other player…`
+					? `${d}/${Math.max(1, targetSize - 1)} agreed · waiting for the other player…`
 					: "if they return first, the match resumes normally.";
 		this.show(
 			`dropout:${e}:${a}:${c}:${d}`,
-			`<p class="eyebrow">ONE SEAT IS QUIET</p><h2>${J(e)} hasn’t come back.</h2><p class="quiet">your score and this match are safe.<br>both players still here must agree to continue.</p><button class="stampbtn" type="button" data-state="${c ? "working" : a ? "done" : "idle"}" aria-busy="${c}" ${a ? "disabled" : ""}>${v}</button><p class="quiet group-wait">${P}</p><button class="pencil-link" type="button" data-leave>leave this match</button>`
+			`<p class="eyebrow">ONE SEAT IS QUIET</p><h2>${J(e)} hasn’t come back.</h2><p class="quiet">your score and this match are safe.<br>all players still here must agree to continue.</p><button class="stampbtn" type="button" data-state="${c ? "working" : a ? "done" : "idle"}" aria-busy="${c}" ${a ? "disabled" : ""}>${v}</button><p class="quiet group-wait">${P}</p><button class="pencil-link" type="button" data-leave>leave this match</button>`
 		) &&
 			((q = this.card.querySelector(".stampbtn")) == null ||
 				q.addEventListener("click", f),
