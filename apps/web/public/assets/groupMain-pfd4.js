@@ -670,7 +670,7 @@ class Xa {
 				.filter((b) => b.ready)
 				.map((b) => (b.seat === e.mySeat ? "you" : J(b.name))),
 			M = d || (B == null ? void 0 : B.ready),
-			G = e.members.filter((b) => b.present).length === 3,
+			G = e.members.filter((b) => b.present).length === N.length,
 			I = this.standings.length === 2,
 			s = I
 				? Math.min(...this.standings.map((b) => b.mine))
@@ -2424,7 +2424,7 @@ async function fo(r = null) {
 		ds = (t) =>
 			t.outs
 				.map((n) => re.indexOf(n))
-				.filter((n) => n === 0 || n === 1 || n === 2),
+				.filter((n) => N.includes(n)),
 		hs = (t) => Object.fromEntries(re.map((n) => [n, t.final[n]])),
 		wn = (t, n) => {
 			try {
