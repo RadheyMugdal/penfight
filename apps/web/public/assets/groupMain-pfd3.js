@@ -2486,7 +2486,7 @@ async function fo(r = null) {
 			const o = l.state(),
 				i = re.indexOf(t.package.shooterId);
 			if (
-				(i !== 0 && i !== 1 && i !== 2) ||
+				!N.includes(i) ||
 				t.package.baseRevision !== o.revision ||
 				t.package.turn !== o.turn ||
 				o.activeSeat !== i ||

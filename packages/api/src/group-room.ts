@@ -54,33 +54,33 @@ export class GroupError extends Error {
 
 interface GroupRoomRow {
 	code: string;
-	size: number;
-	status: string;
 	match_no: number;
-	roster_revision: number;
-	state: string | null;
 	pens: string | null;
+	roster_revision: number;
+	size: number;
+	state: string | null;
 	state_revision: number;
+	status: string;
 	transition_owner: string | null;
 	updated_at: number;
 }
 
 interface GroupMemberRow {
-	user_id: string;
-	seat: number;
+	last_seen: number;
 	name: string;
 	pen: string;
-	ready_match: number;
 	present: number;
-	last_seen: number;
+	ready_match: number;
+	seat: number;
+	user_id: string;
 }
 
 interface GroupTurnRow {
-	revision: number;
-	turn: number;
 	command_id: string;
 	package: string;
+	revision: number;
 	state: string;
+	turn: number;
 }
 
 interface GroupVoteRow {
@@ -108,10 +108,8 @@ interface GroupMatchState {
 
 export interface GroupRoomAnswer {
 	code: string;
-	room_id: string;
-	topic: string;
-	user_id: string;
-	my_seat: number;
+	drop_votes: { reporter_user_id: string; target_user_id: string }[];
+	match_no: number;
 	members: {
 		user_id: string;
 		name: string;
@@ -120,13 +118,16 @@ export interface GroupRoomAnswer {
 		ready: boolean;
 		seat: number;
 	}[];
-	status: GroupStatus;
-	match_no: number;
-	roster_revision: number;
-	state: GroupMatchState | null;
+	my_seat: number;
 	pens: unknown;
+	room_id: string;
+	roster_revision: number;
+	size: number;
+	state: GroupMatchState | null;
+	status: GroupStatus;
+	topic: string;
 	transition_owner_user_id: string | null;
-	drop_votes: { reporter_user_id: string; target_user_id: string }[];
+	user_id: string;
 }
 
 const invalid = (message: string) => new GroupError(message, "invalid", 400);
@@ -216,7 +217,11 @@ function seatId(seat: number): string {
 
 // Same rotation the bundle's engine uses (`en`): the next seat after `from`
 // that is not in `skip`.
-function nextSeat(from: number, skip: Set<number>, size: number): number | null {
+function nextSeat(
+	from: number,
+	skip: Set<number>,
+	size: number
+): number | null {
 	for (let step = 1; step <= size; step++) {
 		const seat = (((from + step) % size) + size) % size;
 		if (!skip.has(seat)) {
@@ -349,7 +354,8 @@ export class GroupDesk {
 			// Same player id coming back (reload, second tab, rematch link).
 			const live = toStatus(room.status) === "playing";
 			const withdrawn = this.currentState(room)?.withdrawn ?? [];
-			const present = live && withdrawn.includes(existing.seat) ? existing.present : 1;
+			const present =
+				live && withdrawn.includes(existing.seat) ? existing.present : 1;
 			this.sql.exec(
 				"UPDATE group_member SET name = ?, pen = ?, present = ?, last_seen = ? WHERE user_id = ?",
 				name,
@@ -529,7 +535,10 @@ export class GroupDesk {
 		) {
 			throw invalid("group turn package does not match its command");
 		}
-		if (jsonBytes(pkg) > MAX_PACKAGE_BYTES || jsonBytes(nextState) > MAX_STATE_BYTES) {
+		if (
+			jsonBytes(pkg) > MAX_PACKAGE_BYTES ||
+			jsonBytes(nextState) > MAX_STATE_BYTES
+		) {
 			throw invalid("group turn too large");
 		}
 
@@ -562,6 +571,18 @@ export class GroupDesk {
 			current.turn !== turn
 		) {
 			throw new GroupError("it is not your turn", "P0001", 409);
+		}
+
+		if (
+			nextState.phase === "aiming" &&
+			nextState.activeSeat !== null &&
+			nextState.outs.includes(nextState.activeSeat)
+		) {
+			const skip = new Set([...nextState.outs, ...(nextState.withdrawn ?? [])]);
+			const fixedSeat = nextSeat(nextState.activeSeat, skip, room.size);
+			if (fixedSeat !== null) {
+				nextState.activeSeat = fixedSeat;
+			}
 		}
 
 		const packageJson = JSON.stringify(pkg);
@@ -669,7 +690,10 @@ export class GroupDesk {
 
 	// ---- leaving -------------------------------------------------------------
 
-	private leave(code: string, callerId: string): GroupRoomAnswer | { ok: true } {
+	private leave(
+		code: string,
+		callerId: string
+	): GroupRoomAnswer | { ok: true } {
 		const member = this.readMember(callerId);
 		if (!member) {
 			return { ok: true };
@@ -688,7 +712,8 @@ export class GroupDesk {
 		const matchNo = readInt(body.p_match_no, "match");
 		const targetId = body.p_target;
 		const room = this.mustReadRoom(code);
-		const target = typeof targetId === "string" ? this.readMember(targetId) : null;
+		const target =
+			typeof targetId === "string" ? this.readMember(targetId) : null;
 		if (
 			!target ||
 			target.user_id === callerId ||
@@ -732,7 +757,10 @@ export class GroupDesk {
 		const status = toStatus(room.status);
 		if (status === "waiting" || status === "terms") {
 			// Free the seat so somebody else can take it.
-			this.sql.exec("DELETE FROM group_member WHERE user_id = ?", member.user_id);
+			this.sql.exec(
+				"DELETE FROM group_member WHERE user_id = ?",
+				member.user_id
+			);
 			this.refreshLobbyStatus(code);
 			this.bumpRoster(code);
 			return;
@@ -890,6 +918,7 @@ export class GroupDesk {
 			pens: parseJson<unknown>(room.pens),
 			room_id: `group_${code}`,
 			roster_revision: room.roster_revision,
+			size: room.size,
 			state: this.currentState(room),
 			status: toStatus(room.status),
 			topic: `realtime:group:${code}`,
@@ -930,10 +959,15 @@ function withdrawSeat(
 		return next;
 	}
 	const out = new Set(next.outs);
-	const left = Array.from({ length: size }, (_, i) => i).filter((s) => !out.has(s));
+	const left = Array.from({ length: size }, (_, i) => i).filter(
+		(s) => !out.has(s)
+	);
 	if (left.length >= 2) {
-		if (next.activeSeat === seat) {
-			next.activeSeat = nextSeat(seat, out, size);
+		if (
+			next.activeSeat === seat ||
+			(next.activeSeat !== null && out.has(next.activeSeat))
+		) {
+			next.activeSeat = nextSeat(next.activeSeat ?? seat, out, size);
 			next.turn += 1;
 		}
 		return next;

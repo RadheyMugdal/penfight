@@ -18,7 +18,14 @@ export default function DeskPage() {
 		// If this is not an explicit spectator view (by doesn't start with 'w'),
 		// seamlessly direct friend into the duel match
 		if (code && !by?.startsWith("w")) {
-			router.replace(`/?duel=${encodeURIComponent(code)}&r=d`);
+			const q = new URLSearchParams(searchParams.toString());
+			if (q.has("group")) {
+				q.set("r", "g");
+			} else {
+				q.set("duel", code);
+				q.set("r", "d");
+			}
+			router.replace(`/?${q.toString()}`);
 			return;
 		}
 

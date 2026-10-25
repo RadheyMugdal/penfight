@@ -838,12 +838,22 @@ class Xa {
 				});
 	}
 }
-const targetSize = Math.max(
+let targetSize = Math.max(
 	2,
 	Math.min(6, Number(new URLSearchParams(location.search).get("size")) || 3)
 );
-const N = Array.from({ length: targetSize }, (_, i) => i),
-	eo = targetSize;
+let N = Array.from({ length: targetSize }, (_, i) => i),
+	eo = targetSize,
+	re = N.map($e);
+function updateTargetSize(sz) {
+	if (typeof sz === "number" && sz >= 2 && sz <= 6 && sz !== targetSize) {
+		targetSize = sz;
+		N = Array.from({ length: targetSize }, (_, i) => i);
+		eo = targetSize;
+		re = N.map($e);
+		typeof uo === "function" && uo();
+	}
+}
 function Pt(r) {
 	return N[((r % N.length) + N.length) % N.length];
 }
@@ -868,6 +878,9 @@ function en(r, e) {
 }
 class tn {
 	constructor(e, a) {
+		if (a && Array.isArray(a.scores) && a.scores.length >= 2 && a.scores.length <= 6) {
+			updateTargetSize(a.scores.length);
+		}
 		k(this, "value");
 		(this.value = a
 			? St(a)
@@ -917,7 +930,7 @@ class tn {
 		if (!this.canShoot(e) || a !== this.value.turn) {
 			return !1;
 		}
-		const c = en(e, new Set(this.value.outs));
+		const c = en(e, new Set([...this.value.outs, ...this.value.withdrawn]));
 		return c === null
 			? !1
 			: (this.value.turn++,
@@ -988,6 +1001,9 @@ class tn {
 	}
 	assertValid() {
 		const e = this.value;
+		if (e.scores && e.scores.length !== N.length && e.scores.length >= 2 && e.scores.length <= 6) {
+			updateTargetSize(e.scores.length);
+		}
 		if (
 			e.scores.length !== N.length ||
 			e.outs.some((a) => !N.includes(a)) ||
@@ -1002,7 +1018,12 @@ class tn {
 			throw new Error("aiming without an active seat");
 		}
 		if (e.activeSeat !== null && e.outs.includes(e.activeSeat)) {
-			throw new Error("out player cannot be active");
+			const fixed = en(e.activeSeat, new Set([...e.outs, ...e.withdrawn]));
+			if (fixed !== null) {
+				e.activeSeat = fixed;
+			} else {
+				throw new Error("out player cannot be active");
+			}
 		}
 	}
 }
@@ -1545,7 +1566,7 @@ function Jn(r, e, a, c = localStorage) {
 		c
 	);
 }
-const re = N.map($e),
+(re = N.map($e)),
 	Ze = 2800,
 	nn = "pf_group_return_v1";
 function Xe() {
@@ -1716,6 +1737,7 @@ async function fo(r = null) {
 				}
 				return Zt(null), Y(d.equipped);
 			})),
+			updateTargetSize(s.size || (s.state && s.state.scores && s.state.scores.length)),
 			G)
 		) {
 			return;
@@ -2206,7 +2228,7 @@ async function fo(r = null) {
 				w.setTurn(`waiting for ${n}`, !1, "↻"), ne();
 				return;
 			}
-			if (t.phase === "aiming" && t.activeSeat !== null) {
+			if (t.phase === "aiming" && t.activeSeat !== null && !t.outs.includes(t.activeSeat)) {
 				const n = t.activeSeat === s.mySeat,
 					o = de(t.activeSeat),
 					i = t.outs.includes(s.mySeat),
@@ -2486,7 +2508,7 @@ async function fo(r = null) {
 			const o = l.state(),
 				i = re.indexOf(t.package.shooterId);
 			if (
-				(i !== 0 && i !== 1 && i !== 2) ||
+				!N.includes(i) ||
 				t.package.baseRevision !== o.revision ||
 				t.package.turn !== o.turn ||
 				o.activeSeat !== i ||
@@ -3299,6 +3321,9 @@ ${t.url}`;
 		};
 	function Ae(t) {
 		var m, y, S, R, A, O;
+		if (t) {
+			updateTargetSize(t.size || (t.state && t.state.scores && t.state.scores.length));
+		}
 		const n = s,
 			o = s.status === "playing",
 			i = (l == null ? void 0 : l.state()) ?? null;
